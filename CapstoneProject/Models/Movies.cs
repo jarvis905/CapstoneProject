@@ -1,13 +1,30 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
+
 namespace CapstoneProject.Models
 {
 	public class Movies
 	{
         public int Id { get; set; }
 
-        public int Title { get; set; }
+        [Required]
+        public string Title { get; set; }
 
-        public int ReleaseDate { get; set; }
+        [DataType(DataType.Date)]
+        [Display(Name = "Release Date")]
+        public DateTime ReleaseDate { get; set; }
+
+        public string Genre { get; set; }
+
+        public string Director { get; set; }
+
+        [MaxLength(500)]
+        public string Description { get; set; }
+
+        [Display(Name = "Poster Image URL")]
+        public string PosterImageUrl { get; set; }
+
+
     }
 }
 
