@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace CapstoneProject.Models
 {
-    public class Reviews
+    public class Theaters
     {
         public int Id { get; set; }
 
