@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CapstoneProject.Models
 {
@@ -8,23 +9,28 @@ namespace CapstoneProject.Models
         public int Id { get; set; }
 
         [Required]
-        [Display(Name = "Movie")]
         public int MovieId { get; set; }
-        [ForeignKey("MovieId")]
-        public Movies Movie { get; set; }
-
+        
         [Display(Name = "Theatre")]
         public int TheatreId { get; set; }
-        [ForeignKey("TheatreId")]
-        public Theatres Theatre { get; set; }
+
+        [Required]
+        [DataType(DataType.Currency)]
+        [DisplayFormat(DataFormatString = "{0:C}")]
+        public decimal TicketPrice { get; set; }
 
         [DataType(DataType.DateTime)]
         [Display(Name = "Show Time")]
         public DateTime ShowTime { get; set; }
-
-        public int Price { get; set; }
+        
 
         public int SeatsAvailable { get; set; }
+
+        [ForeignKey("MovieId")]
+        public Movies Movies { get; set; }
+
+        [ForeignKey("TheatreId")]
+        public Theaters Theaters { get; set; }
     }
 }
 

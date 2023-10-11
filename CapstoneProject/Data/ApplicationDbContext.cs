@@ -9,5 +9,9 @@ public class ApplicationDbContext : IdentityDbContext
         : base(options)
     {
     }
+    public DbSet<CapstoneProject.Models.Movies> Movies { get; set; }
+    public DbSet<CapstoneProject.Models.Price> Price { get; set; }
+    public DbSet<CapstoneProject.Models.Reviews> Reviews { get; set; }
+    public DbSet<CapstoneProject.Models.Theaters> Theaters { get; set; }
 }
 
