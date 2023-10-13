@@ -111,6 +111,26 @@ namespace CapstoneProject.Controllers
             return Ok(movie);
         }
 
+        //Delete movie
+        [HttpDelete("delete/{id}")]
+        [Produces("application/json")]
+        public async Task<IActionResult> DeleteMovie(int id)
+        {
+            var movie = await _context.Movies.FindAsync(id);
+
+            if (movie == null)
+            {
+                // Return 404 if the movie with the given ID is not found
+                return NotFound();
+            }
+
+            _context.Movies.Remove(movie);
+            await _context.SaveChangesAsync();
+
+            return Ok("Movie deleted successfully");
+        }
+
+
     }
 }
 
