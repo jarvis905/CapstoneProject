@@ -31,15 +31,31 @@ namespace CapstoneProject.Controllers
         }
 
         // Get: getall
-        [HttpGet("getallreviews")]
+        [HttpGet("getall")]
         [Produces("application/json")]
         public async Task<ActionResult<IEnumerable<Reviews>>> GetAll()
         {
-            return await _context.Reviews.ToListAsync();
+            var reviews = await _context.Reviews
+            .Include(r => r.Movie)
+            .Include(r => r.User)
+            .Select(r => new
+            {
+                r.Id,
+                r.MovieId,
+                MovieTitle = r.Movie.Title,  // Select only the title of the related movie
+                r.UserId,
+                UserName = r.User.UserName,  // Select only the username of the related user
+                r.Rating,
+                r.Comment,
+                r.Timestamp
+            })
+            .ToListAsync();
+
+            return Ok(reviews);
         }
 
         // API endpoint to get reviews of a specific movie by ID
-        [HttpGet("getbymovieid/{movieid}")]
+        [HttpGet("movie/{movieid}")]
         [Produces("application/json")]
         public async Task<ActionResult<Reviews>> GetReviews(int movieid)
         {
@@ -53,7 +69,7 @@ namespace CapstoneProject.Controllers
         }
 
         // API endpoint to get reviews of a specific User by ID
-        [HttpGet("getbyuserid/{userid}")]
+        [HttpGet("user/{userid}")]
         [Produces("application/json")]
         public async Task<ActionResult<Reviews>> GetReviewsByUser(String userid)
         {
@@ -67,13 +83,13 @@ namespace CapstoneProject.Controllers
         }
 
         // API endpoint to post a review for a movie
-        [HttpPost("writereview")]
+        [HttpPost("write")]
         [Produces("application/json")]
         public async Task<ActionResult<Reviews>> WriteReview([FromBody] Reviews review)
         {
             if (ModelState.IsValid)
             {
-\                _context.Reviews.Add(review);
+                _context.Reviews.Add(review);
                 await _context.SaveChangesAsync();
                 return CreatedAtAction("GetReviews", new { id = review.Id }, review);
             }
@@ -81,7 +97,7 @@ namespace CapstoneProject.Controllers
         }
 
         // API endpoint to edit a review
-        [HttpPut("editreview/{id}")]
+        [HttpPut("edit/{id}")]
         [Produces("application/json")]
         public async Task<IActionResult> EditReview(int id, [FromBody] Reviews editedReview)
         {
@@ -102,7 +118,7 @@ namespace CapstoneProject.Controllers
         }
 
         // API endpoint to delete a review
-        [HttpDelete("deletereview/{id}")]
+        [HttpDelete("delete/{id}")]
         public async Task<IActionResult> DeleteReview(int id)
         {
             var review = await _context.Reviews.FindAsync(id);
