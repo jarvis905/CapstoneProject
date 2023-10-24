@@ -43,11 +43,41 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2023 - CapstoneProject - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    <footer class="bg-light text-dark" style="padding-top: 1px; padding-right: 0px; padding-left: 0px; border: 1px solid black;">
+        <div class="container py-4 py-lg-5">
+            <div class="row justify-content-center">
+                <div class="col-sm-4 col-md-3 text-center text-lg-start d-flex flex-column item">
+                    <h3 class="fs-6">Explore</h3>
+                    <ul class="list-unstyled">
+                        <li><a class="text-black" href="#">Movies</a></li>
+                        <li><a class="text-black" href="#">Theaters</a></li>
+                        <li><a class="text-black" href="#">Events</a></li>
+                    </ul>
+                </div>
+                <div class="col-sm-4 col-md-3 text-center text-lg-start d-flex flex-column item">
+                    <h3 class="fs-6">About Us</h3>
+                    <ul class="list-unstyled">
+                        <li><a class="text-black" href="#">Company Info</a></li>
+                        <li><a class="text-black" href="#">Contact</a></li>
+                        <li><a class="text-black" href="#">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="col-sm-4 col-md-3 text-center text-lg-start d-flex flex-column item">
+                    <h3 class="fs-6">Join Us</h3>
+                    <ul class="list-unstyled">
+                        <li><a class="text-black" href="#">Career Opportunities</a></li>
+                        <li><a class="text-black" href="#">Partnerships</a></li>
+                        <li><a class="text-black" href="#">Advertise</a></li>
+                    </ul>
+                </div>
+            </div>
+            <hr>
+            <div class="d-flex justify-content-between align-items-center pt-3">
+                <p class="mb-0">Copyright © 2023 Movie Ticket <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a></p>
+            </div>
         </div>
     </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

@@ -131,6 +131,49 @@ namespace CapstoneProject.Controllers
         }
 
 
+
+        [HttpGet("random")]
+        [Produces("application/json")]
+        public async Task<IActionResult> RandomMovie()
+        {
+            var randomMovieId = await FetchRandomMovieIdFromDatabase();
+
+            if (randomMovieId == null)
+            {
+                // Return a 404 status code if no movie is found
+                return NotFound(); 
+            }
+
+            var randomMovie = await _context.Movies.FindAsync(randomMovieId);
+
+            if (randomMovie == null)
+            {
+                // Return a 404 status code if the movie is not found in the database
+                return NotFound(); 
+            }
+            ViewBag.RandomMovieImageUrl = randomMovie.PosterImageUrl;
+            //return View();
+            return Ok(randomMovie.PosterImageUrl);
+        }
+
+        // Helper method to fetch a random movie ID from the database
+        private async Task<int?> FetchRandomMovieIdFromDatabase()
+        {
+            var totalMovies = await _context.Movies.CountAsync();
+
+            if (totalMovies == 0)
+            {
+                // No movies in the database
+                return null; 
+            }
+
+            var random = new Random();
+            // Generate a random movie ID between 1 and totalMovies
+            var randomIndex = random.Next(1, totalMovies + 1); 
+
+            return randomIndex;
+        }
+
     }
 }
 
