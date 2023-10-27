@@ -14,5 +14,13 @@ html {
 }
 
 body {
-  margin-bottom: 60px;
+  margin-bottom: 20px;
+}
+
+.fancy-scrollarea {
+    max-height: 700px;
+    overflow-y: auto;
+    border: 1px solid #e5e5e5; /* Add a border for a stylish look */
+    border-radius: 10px; /* Add rounded corners for a modern feel */
+    padding: 30px; /* Add padding for spacing */
 }

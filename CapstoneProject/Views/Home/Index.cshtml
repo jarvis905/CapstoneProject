@@ -4,35 +4,42 @@
     ViewData["Title"] = "Home Page";
 }
 
+<head>
+    <link rel="stylesheet" href="css/site.css">
+</head>
+
 <body>
 
     <section class="search">
-
         <div class="container">
-            <div class="card mask-custom p-4 border-0">
+            <div class="card border-0 shadow-lg search-card">
                 <div class="card-body">
-                    <p class="h1 font-weight-bold mb-4 ">Search the Movie</p>
-                    <div class="row justify-content-center">
-                        <div class="col-md-6 mb-3 mb-md-0">
-                            <div id="basic" class="form-outline form-white">
-                                <input type="text" id="sec1" class="form-control form-control-lg" />
-                                <label class="form-label" for="sec1">Which movie you are looking for?</label>
+                    @*<h1 class="display-9 font-weight-bold mb-2">Find Your Movie</h1>*@
+                    <div class="row justify-content-center align-items-center">
+                        <div class="col-md-4 mb-3 mb-md-0">
+                            <div class="form-group">
+                                <select class="form-control form-control-lg fancy-select" id="categorySelect">
+                                    <option value="all">All Categories</option>
+                                    <option value="action">Action</option>
+                                    <option value="comedy">Comedy</option>
+                                    <option value="drama">Drama</option>
+                                    <option value="fantasy">Fantasy</option>
+                                </select>
                             </div>
                         </div>
-                        <div class="col-md-4 mb-3 mb-md-0">
-                            <div id="genre" class="form-outline form-white">
-                                <input type="text" id="sec2" class="form-control form-control-lg" />
-                                <label class="form-label" for="sec2">Genre</label>
+                        <div class="col-md-6 mb-3 mb-md-0">
+                            <div class="form-outline form-white">
+                                <input type="text" id="sec1" class="form-control form-control-lg fancy-input" placeholder="Search for movies...">
+                                <i class="fas fa-search search-icon"></i>
                             </div>
                         </div>
                         <div class="col-md-2">
-                            <input class="btn btn-info btn-block btn-lg" type="submit" value="Search" />
+                            <a asp-area="" asp-controller="Movie" asp-action="Index" class="btn btn-primary btn-lg btn-block fancy-button">Search</a>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
     </section>
 
     <section>
@@ -46,7 +53,6 @@
                     </div>
                     <div class="carousel slide" data-bs-ride="carousel" id="carousel-1">
                         <div class="carousel-inner">
-
                             <div class="carousel-inner">
                                 <div class="carousel-item active">
                                     <img class="w-100 d-block" data-aos="fade" data-aos-delay="100" id="randomMovieImage1" alt="Slide Image" style="width: 500px; height: 700px;">
@@ -58,33 +64,34 @@
                                     <img class="w-100 d-block" data-aos="fade" data-aos-delay="100" id="randomMovieImage3" alt="Slide Image3" style="width: 500px; height: 700px;">
                                 </div>
                             </div>
-
                         </div>
                         <div><a class="carousel-control-prev" href="#carousel-1" role="button" data-bs-slide="prev"><span class="carousel-control-prev-icon"></span><span class="visually-hidden">Previous</span></a><a class="carousel-control-next" href="#carousel-1" role="button" data-bs-slide="next"><span class="carousel-control-next-icon"></span><span class="visually-hidden">Next</span></a></div>
                         <div class="carousel-indicators"><button type="button" data-bs-target="#carousel-1" data-bs-slide-to="0" class="active"></button> <button type="button" data-bs-target="#carousel-1" data-bs-slide-to="1"></button> <button type="button" data-bs-target="#carousel-1" data-bs-slide-to="2"></button></div>
                     </div>
                 </div>
-
                 <div class="col-md-6">
-                    <div class="list-group scrollarea" id="movieScroll">
-                        @foreach (var movie in Model.Take(4).OrderBy(m => m.ReleaseDate))
+                    <div class="list-group fancy-scrollarea" id="movieScroll">
+                        @foreach (var movie in Model.Take(10).OrderBy(m => m.ReleaseDate))
                         {
-                            <div class="list-group-item list-group-item-action">
-                                <div class="row">
-                                    <div class="col-3 col-md-2">
-                                        <img src="@movie.PosterImageUrl" class="img-fluid" alt="Movie Poster">
+                            <div class="card mb-4">
+                                <div class="row no-gutters">
+                                    <div class="col-md-3">
+                                        <img src="@movie.PosterImageUrl" class="card-img" alt="Movie Poster">
                                     </div>
-                                    <div class="col-9 col-md-10">
-                                        <h5 class="mb-1">@movie.Title</h5>
-                                        <p class="text-muted">@movie.ReleaseDate.ToShortDateString()</p>
-                                        <p>@movie.Description</p>
+                                    <div class="col-md-9">
+                                        <div class="card-body">
+                                            <h4 class="card-title">@movie.Title</h4>
+                                            <p class="card-text">@movie.Description</p>
+                                        </div>
                                     </div>
+                                </div>
+                                <div class="card-footer text-muted">
+                                    Release Date: @movie.ReleaseDate
                                 </div>
                             </div>
                         }
                     </div>
                 </div>
-
             </div>
         </div>
     </section>
