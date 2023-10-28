@@ -61,10 +61,6 @@ namespace CapstoneProject.Controllers
                 query = query.Where(m => EF.Functions.Like(m.Title, $"%{Title}%"));
             }
 
-            if (!string.IsNullOrWhiteSpace(Genre))
-            {
-                query = query.Where(m => m.Genre == Genre);
-            }
 
             if (ReleaseDate != null)
             {
@@ -96,10 +92,6 @@ namespace CapstoneProject.Controllers
                 movie.Title = editedMovie.Title;
             }
 
-            if (!string.IsNullOrWhiteSpace(editedMovie.Genre))
-            {
-                movie.Genre = editedMovie.Genre;
-            }
 
             if (editedMovie.ReleaseDate != null)
             {

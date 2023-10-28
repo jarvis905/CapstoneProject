@@ -13,5 +13,8 @@ public class ApplicationDbContext : IdentityDbContext
     public DbSet<CapstoneProject.Models.Price> Price { get; set; }
     public DbSet<CapstoneProject.Models.Reviews> Reviews { get; set; }
     public DbSet<CapstoneProject.Models.Theaters> Theaters { get; set; }
+    public DbSet<CapstoneProject.Models.Genres> Genres { get; set; }
+    public DbSet<CapstoneProject.Models.MovieRate> MovieRates { get; set; }
+
 }
 
