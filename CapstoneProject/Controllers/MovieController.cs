@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CapstoneProject.Data;
 using CapstoneProject.Models;
+using System.Diagnostics.Eventing.Reader;
+using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace CapstoneProject.Controllers
 {
@@ -24,6 +26,20 @@ namespace CapstoneProject.Controllers
         // GET: /<controller>/
         public async Task<IActionResult> Index()
         {
+            return View();
+        }
+
+        [HttpGet("movie/{id}")]
+        public async Task<IActionResult> SingleMovie(int id)
+        {
+
+            var selectedMovie = await _context.Movies.FindAsync(id);
+
+            if (selectedMovie == null)
+            {
+                return NotFound(); 
+            }
+            ViewBag.movie = selectedMovie;
             return View();
         }
 
