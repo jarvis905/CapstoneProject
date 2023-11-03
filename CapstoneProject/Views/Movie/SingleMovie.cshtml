@@ -1,0 +1,99 @@
+@model IEnumerable<CapstoneProject.Models.Movies>
+@* @model IEnumerable<CapstoneProject.Models.Reviews> *@
+
+<!doctype html>
+<html lang="en">
+<head>
+    <title>@ViewData["Title"] = "Movie";</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <style>
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    @{
+        var movieData = ViewBag.movie;
+    }
+    <section>
+        <div class="text-center container">
+            <div class="row">
+                <div class="col-lg-6">
+                    <h2 class="display-4">MovieName: @movieData.Title</h2>
+                    <p>Description: @movieData.Description</p>
+                    <p>Release Date: @movieData.ReleaseDate</p>
+                    <p>Writer: @movieData.Writer</p>
+                    <p>Director: @movieData.Director</p>
+                    <p>Actors: @movieData.Actores</p>
+                    <p>Language: @movieData.Language</p>
+                    <p>RunTime: @movieData.RunTime</p>
+                    <p>Box Office: @movieData.BoxOffice</p>
+                </div>
+            </div>
+        </div>
+    <div class="container">
+        <div class="mt-4 p-5 bg-light rounded">
+            <div class="row">
+                <div class="col-sm-3">
+                    Poster goes here
+                    <img src="@movieData.PosterImageUrl" alt="Movie poster">
+                </div>
+                <div class="col-sm-9">
+                    Description: Lorem ipsum dolor sit amet consectetur adipisicing elit. Autem at eos quas aut doloribus error in porro? Quaerat, modi esse autem placeat natus, ab quae reiciendis odit et non possimus?
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <ul class="list-group">
+                <!-- Option for user to enter their review -->
+                <li class="list-group-item">
+                    <div class="container">
+                        <p>Please provide your feedback for the movie</p>
+
+                        <!-- Rating with drag option -->
+                        <label for="customRange" class="form-label">Enter Rating from 1 to 10</label>
+                        <input type="range" class="form-range" id="customRange" step="10">
+
+                        <!-- Ask user input -->
+                        <div class="mb-3">
+                            <textarea class="form-control" id="formControlTextarea1" rows="3" placeholder="Enter review ..."></textarea>
+                        </div>
+                        <div class="text-end">
+                            <button type="button" class="btn btn-success">Submit</button>
+                        </div>
+                    </div>
+                </li>
+                
+                <!-- Reviews in database -->
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col-sm-2">
+                            <p>User name</p>
+                            <img src="cinqueterre.jpg" class="rounded-circle" width="90px">
+                        </div>
+                        <div class="col-sm-10">
+                            <p>The movie was really great.</p>
+                            <p>Rating: 7</p>
+                        </div>
+                    </div>
+                </li>
+
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col-sm-2">
+                            <p>User name</p>
+                            <img src="cinqueterre.jpg" class="rounded-circle" width="90px">
+                        </div>
+                        <div class="col-sm-10">
+                            <p>The movie was really great.</p>
+                            <p>Rating: 7</p>
+                        </div>
+                    </div>
+                </li>
+
+            </ul>
+        </div>
+    </div>
+    </section>
+</body>
+</html>
