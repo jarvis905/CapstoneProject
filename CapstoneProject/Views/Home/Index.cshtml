@@ -1,4 +1,5 @@
-﻿@model IEnumerable<CapstoneProject.Models.Movies>
+﻿@*@model IEnumerable<CapstoneProject.Models.Movies>*@
+@model CapstoneProject.Models.MoviesViewModel
 
 @{
     ViewData["Title"] = "Home Page";
@@ -6,6 +7,41 @@
 
 <head>
     <link rel="stylesheet" href="css/site.css">
+    <style>
+        .scroll-box {
+            width: 100%; 
+            height: auto; 
+            overflow-x: scroll; 
+            overflow-y: hidden; 
+            white-space: nowrap; 
+            scrollbar-width: none; 
+            -ms-overflow-style: none; 
+            display: flex;
+            flex-wrap: nowrap; 
+            justify-content: flex-start; 
+        }
+
+        .scroll-box::-webkit-scrollbar {
+                width: 0; 
+        }
+
+        .box-content {
+            width: 100%;
+            display: flex;
+        }
+
+
+        .card-body {
+            min-height: 200px;
+            min-width: 300px;
+            margin-right: 5px;
+        }
+
+        .search-body {
+            min-height: 100px;
+        }
+
+    </style>
 </head>
 
 <body>
@@ -13,9 +49,9 @@
     <section class="search">
         <div class="container">
             <div class="card border-0 shadow-lg search-card">
-                <div class="card-body">
+                <div class="search-body d-flex justify-content-center align-items-center">
                     @*<h1 class="display-9 font-weight-bold mb-2">Find Your Movie</h1>*@
-                    <div class="row justify-content-center align-items-center">
+                    <div class="row">
                         <div class="col-md-4 mb-3 mb-md-0">
                             <div class="form-group">
                                 <select class="form-control form-control-lg fancy-select" id="categorySelect">
@@ -42,6 +78,7 @@
         </div>
     </section>
 
+
     <section>
         <div class="container">
             <div class="row">
@@ -56,7 +93,7 @@
                             <div class="carousel-inner">
                                 @{
                                     var random = new Random();
-                                    var randomMovies = Model.OrderBy(m => random.Next()).Take(3).ToList();
+                                    var randomMovies = Model.LocalMovies.OrderBy(m => random.Next()).Take(3).ToList();
                                 }
 
                                 @foreach (var movie in randomMovies)
@@ -73,7 +110,7 @@
                 </div>
                 <div class="col-md-6">
                     <div class="list-group fancy-scrollarea" id="movieScroll">
-                        @foreach (var movie in Model.Take(10).OrderByDescending(m => m.ReleaseDate))
+                        @foreach (var movie in Model.LocalMovies.Take(10).OrderByDescending(m => m.ReleaseDate))
                         {
                             <div class="card mb-4">
                                 <div class="row no-gutters">
@@ -94,6 +131,33 @@
                         }
                     </div>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="bar">
+        <h2 class="scroll-box font-weight-light">Popular Movies</h2>
+        <div class="box-content">
+            <div class="scroll-box d-flex flex-nowrap">
+                @foreach (var movie in Model.PopularMovies)
+                {
+                    <div class="card card-body">
+                        <h5 class="card-title">@movie.Title</h5>
+                        <img src="https://www.themoviedb.org/t/p/w1280/@movie.backdrop_path" alt="Movie Backdrop">
+                        <div class="row">
+                            <div class="col-6">
+                                <h6 style="color: blue; font-size: 14px">@movie.release_date</h6>
+                                <h6>@movie.original_language</h6>
+                            </div>
+                            <div class="col-6">
+                                <div class="star-rating">
+                                    <div class="star-rating-inner" style="width: @(movie.vote_average * 10)">★</div>
+                                </div>
+                                <h6>@movie.vote_average</h6>
+                            </div>
+                        </div>
+                    </div>
+                }
             </div>
         </div>
     </section>
