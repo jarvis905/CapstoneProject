@@ -8,6 +8,8 @@ namespace CapstoneProject.Models
 
         //Get list of popular movies from API
         public List<TheMoviedbModel> PopularMovies { get; set; }
+
+        public List<FavMovies> FavMovies { get; set; }
     }
 }
 
