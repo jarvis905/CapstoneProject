@@ -24,16 +24,10 @@ public class HomeController : Controller
 
     public async Task<IActionResult> Index()
     {
-        var user = await _userManager.GetUserAsync(User);
-        if (user == null)
-        {
-            // Handle the case where the user is not authenticated
-            return View(new MoviesViewModel());
-        }
-
+       
         var MoviesLocal = await _context.Movies.ToListAsync();
         var MoviesApi = await GetPopularMovies();
-        var FavMovies = await _context.FavMovies.Where(fm => fm.UserId == user.Id).ToListAsync();
+        var FavMovies = await _context.FavMovies.ToListAsync();
 
         var model = new MoviesViewModel
         {
