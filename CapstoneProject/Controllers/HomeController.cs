@@ -24,16 +24,19 @@ public class HomeController : Controller
 
     public async Task<IActionResult> Index()
     {
-       
-        var MoviesLocal = await _context.Movies.ToListAsync();
-        var MoviesApi = await GetPopularMovies();
-        var FavMovies = await _context.FavMovies.ToListAsync();
+
+        var popularMovies = await GetMovies("upcoming");
+        var nowPlayingMovies = await GetMovies("now_playing");
+
+        var localMovies = await _context.Movies.ToListAsync();
+        var favMovies = await _context.FavMovies.ToListAsync();
 
         var model = new MoviesViewModel
         {
-            LocalMovies = MoviesLocal,
-            PopularMovies = MoviesApi,
-            FavMovies = FavMovies
+            LocalMovies = localMovies,
+            PopularMovies = popularMovies,
+            NowPlayingMovies = nowPlayingMovies,
+            FavMovies = favMovies
         };
 
         return View(model);
@@ -51,23 +54,29 @@ public class HomeController : Controller
     }
 
 
-    private async Task<List<TheMoviedbModel>> GetPopularMovies()
+    private async Task<List<TheMoviedbModel>> GetMovies(string endpoint)
     {
-        var client = new HttpClient();
+        var page = 1;
 
-        var apiUrl = $"https://api.themoviedb.org/3/movie/popular?language=en-US&page=1&api_key={apiKey}";
+        if (endpoint == "now_playing")
+        {
+            // Set the page to 2 only for "now_playing" endpoint
+            page = 2;
+        }
+
+        var client = new HttpClient();
+        var apiUrl = $"https://api.themoviedb.org/3/movie/{endpoint}?language=en-US&page={page}&api_key={apiKey}";
 
         using (var response = await client.GetAsync(apiUrl))
         {
             if (response.IsSuccessStatusCode)
             {
                 var json = await response.Content.ReadAsStringAsync();
-                var movieResponse = Newtonsoft.Json.JsonConvert.DeserializeObject<MovieResponse>(json);
 
-                if (movieResponse != null)
+                if (endpoint == "upcoming" || endpoint == "now_playing")
                 {
-
-                    return movieResponse.Results;
+                    var movieResponse = Newtonsoft.Json.JsonConvert.DeserializeObject<MovieResponse<TheMoviedbModel>>(json);
+                    return movieResponse?.Results ?? new List<TheMoviedbModel>();
                 }
             }
 

@@ -1,9 +1,9 @@
 ﻿using System;
 namespace CapstoneProject.Models
 {
-	public class MovieResponse
-	{
-        public List<TheMoviedbModel> Results { get; set; }
+    public class MovieResponse<T>
+    {
+        public List<T> Results { get; set; }
     }
 }
 

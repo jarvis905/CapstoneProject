@@ -16,6 +16,12 @@ namespace CapstoneProject.Models
         public string release_date { get; set; }
 
         public string original_language { get; set; }
+
+        public string overview { get; set; }
+
+        public float popularity { get; set; }
+
+        public bool adult { get; set; }
     }
 }
 
