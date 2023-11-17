@@ -21,6 +21,13 @@ namespace CapstoneProject.Controllers
             _context = context;
         }
 
+        // GET: /<controller>/
+        public async Task<IActionResult> Index()
+        {
+            var theaters = await _context.Theaters.ToListAsync();
+            return View(theaters);
+        }
+
         // Endpoint to get all theaters
         [HttpGet("getall")]
         [Produces("application/json")]

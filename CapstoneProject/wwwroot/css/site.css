@@ -20,7 +20,44 @@ body {
 .fancy-scrollarea {
     max-height: 700px;
     overflow-y: auto;
-    border: 1px solid #e5e5e5; /* Add a border for a stylish look */
-    border-radius: 10px; /* Add rounded corners for a modern feel */
-    padding: 30px; /* Add padding for spacing */
+    border: 1px solid #e5e5e5; 
+    border-radius: 10px; 
+    padding: 30px; 
 }
+
+
+
+.card-body {
+    min-height: 300px;
+    min-width: 300px;
+    margin-right: 5px;
+}
+
+.container-fluid {
+    width: 100%;
+}
+
+
+
+.scroll-box {
+    width: 100%; 
+    height: auto; 
+    overflow-x: scroll; 
+    overflow-y: hidden; 
+    white-space: nowrap; 
+    scrollbar-width: none; 
+    -ms-overflow-style: none; 
+    display: flex;
+    flex-wrap: nowrap; 
+    justify-content: flex-start; 
+}
+
+    .scroll-box::-webkit-scrollbar {
+        width: 0; 
+    }
+
+.box-content {
+    width: 100%;
+    display: flex;
+}
+

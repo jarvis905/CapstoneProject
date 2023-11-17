@@ -1,0 +1,169 @@
+@model IEnumerable<CapstoneProject.Models.Theaters>
+
+<!doctype html>
+<html lang="en">
+<head>
+    <title>@ViewData["Title"] = "Theatres";</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        /* Custom css for star rating */
+        .checked {
+            color: orange;
+        }
+    </style>
+</head>
+
+<body>
+
+    <section class="text-center container">
+        <div class="row">
+            <div class="col-lg-6 col-md-8 mx-auto">
+                <h1 class="fw-light">Theaters</h1>
+                <p class="lead text-body-secondary">A list of theaters and search results for a specific location/theaters are displayed in this page.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Search Bar and Filters Section -->
+    <div class="container mt-3 text-center">
+        <div class="row justify-content-center align-items-center">
+            <div class="col-md-4">
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" placeholder="Search for theaters...">
+                    <button class="btn btn-primary" type="button">Search</button>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="filter-row d-flex mb-3">
+                    <!-- Filters: City and Country -->
+                    <div class="filter me-3">
+                        <div class="dropdown">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="cityDropdownButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                City
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="cityDropdownButton">
+                                <li>
+                                    <a class="dropdown-item" href="#">All Cities</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="#">Burnaby</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="#">Vancouver</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="#">New Westminster</a>
+                                </li>
+                                <!-- Add more city options here -->
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="filter me-3">
+                        <div class="dropdown">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="countryDropdownButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                Country
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="countryDropdownButton">
+                                <li>
+                                    <a class="dropdown-item" href="#">All Countries</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="#">Canada</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="#">USA</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="#">Mexico</a>
+                                </li>
+                                <!-- Add more country options here -->
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Threatres Section using bootstrap -->
+    <div class="container mt-3">
+        <ul class="list-group">
+            <li class="list-group-item">
+                <div class="jumbotron">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Cineplex_Entertainment_logo_%282009-2015%29.svg" class="img-rounded" alt="CineplexLogo">
+                        </div>
+                        <div class="col-sm-8">
+                            <h4>Cineplex Vancouver</h4>
+                            <div class="address">
+                                <p>
+                                    <span>5345 Homer Street</span><br>
+                                    <span>Vancouver, BC</span>
+                                </p>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <span>
+                                        Rating
+                                    </span>
+                                    <span class="fa fa-star checked"></span>
+                                    <span class="fa fa-star checked"></span>
+                                    <span class="fa fa-star checked"></span>
+                                    <span class="fa fa-star"></span>
+                                    <span class="fa fa-star"></span>
+                                </div>
+                                <div class="col-sm-4">
+                                    <span>Theater@contact.ca</span>
+                                </div>
+                                <div class="col-sm-4 text-end">
+                                    <button type="button" class="btn btn-primary">Movies</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            @foreach (var theater in Model.Take(20))
+            {
+                <li class="list-group-item">
+                    <div class="jumbotron">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Cineplex_Entertainment_logo_%282009-2015%29.svg" class="img-rounded" alt="CineplexLogo">
+                            </div>
+                            <div class="col-sm-8">
+                                <h4>@theater.Name</h4>
+                                <div class="address">
+                                    <p>
+                                        <span>@theater.Address</span><br>
+                                        <span>@theater.Location</span>
+                                    </p>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <span>
+                                            Rating
+                                        </span>
+                                        <span class="fa fa-star checked"></span>
+                                        <span class="fa fa-star checked"></span>
+                                        <span class="fa fa-star checked"></span>
+                                        <span class="fa fa-star"></span>
+                                        <span class="fa fa-star"></span>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        @theater.ContactInformation
+                                    </div>
+                                    <div class="col-sm-4 text-end">
+                                        <button type="button" class="btn btn-primary">Movies</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>                
+            }
+        </ul>
+    </div>
+
+</body>

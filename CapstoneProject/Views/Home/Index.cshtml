@@ -1,4 +1,5 @@
-﻿@model IEnumerable<CapstoneProject.Models.Movies>
+﻿@*@model IEnumerable<CapstoneProject.Models.Movies>*@
+@model CapstoneProject.Models.MoviesViewModel
 
 @{
     ViewData["Title"] = "Home Page";
@@ -6,6 +7,42 @@
 
 <head>
     <link rel="stylesheet" href="css/site.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.17.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="~/css/indexStyle.css">
+    <style>
+        .scroll-box {
+            width: 100%;
+            height: auto;
+            overflow-x: scroll;
+            overflow-y: hidden;
+            white-space: nowrap;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            display: flex;
+            flex-wrap: nowrap;
+            justify-content: flex-start;
+        }
+
+            .scroll-box::-webkit-scrollbar {
+                width: 0;
+            }
+
+        .box-content {
+            width: 100%;
+            display: flex;
+        }
+
+
+        .card-body {
+            min-height: 200px;
+            min-width: 300px;
+            margin-right: 5px;
+        }
+
+        .search-body {
+            min-height: 100px;
+        }
+    </style>
 </head>
 
 <body>
@@ -13,9 +50,9 @@
     <section class="search">
         <div class="container">
             <div class="card border-0 shadow-lg search-card">
-                <div class="card-body">
+                <div class="search-body d-flex justify-content-center align-items-center">
                     @*<h1 class="display-9 font-weight-bold mb-2">Find Your Movie</h1>*@
-                    <div class="row justify-content-center align-items-center">
+                    <div class="row">
                         <div class="col-md-4 mb-3 mb-md-0">
                             <div class="form-group">
                                 <select class="form-control form-control-lg fancy-select" id="categorySelect">
@@ -42,6 +79,7 @@
         </div>
     </section>
 
+
     <section>
         <div class="container">
             <div class="row">
@@ -54,15 +92,17 @@
                     <div class="carousel slide" data-bs-ride="carousel" id="carousel-1">
                         <div class="carousel-inner">
                             <div class="carousel-inner">
-                                <div class="carousel-item active">
-                                    <img class="w-100 d-block" data-aos="fade" data-aos-delay="100" id="randomMovieImage1" alt="Slide Image" style="width: 500px; height: 700px;">
-                                </div>
-                                <div class="carousel-item">
-                                    <img class="w-100 d-block" data-aos="fade" data-aos-delay="100" id="randomMovieImage2" alt="Slide Image2" style="width: 500px; height: 700px;">
-                                </div>
-                                <div class="carousel-item">
-                                    <img class="w-100 d-block" data-aos="fade" data-aos-delay="100" id="randomMovieImage3" alt="Slide Image3" style="width: 500px; height: 700px;">
-                                </div>
+                                @{
+                                    var random = new Random();
+                                    var randomMovies = Model.LocalMovies.OrderBy(m => random.Next()).Take(3).ToList();
+                                }
+
+                                @foreach (var movie in randomMovies)
+                                {
+                                    <div class="carousel-item active">
+                                        <img src="@movie.PosterImageUrl" class="w-100 d-block" data-aos="fade" data-aos-delay="80" style="width: 500px; height: 700px;">
+                                    </div>
+                                }
                             </div>
                         </div>
                         <div><a class="carousel-control-prev" href="#carousel-1" role="button" data-bs-slide="prev"><span class="carousel-control-prev-icon"></span><span class="visually-hidden">Previous</span></a><a class="carousel-control-next" href="#carousel-1" role="button" data-bs-slide="next"><span class="carousel-control-next-icon"></span><span class="visually-hidden">Next</span></a></div>
@@ -71,7 +111,7 @@
                 </div>
                 <div class="col-md-6">
                     <div class="list-group fancy-scrollarea" id="movieScroll">
-                        @foreach (var movie in Model.Take(10).OrderBy(m => m.ReleaseDate))
+                        @foreach (var movie in Model.LocalMovies.Take(10).OrderByDescending(m => m.ReleaseDate))
                         {
                             <div class="card mb-4">
                                 <div class="row no-gutters">
@@ -87,11 +127,136 @@
                                 </div>
                                 <div class="card-footer text-muted">
                                     Release Date: @movie.ReleaseDate
+
+                                    @if (User.Identity.IsAuthenticated)
+                                    {
+                                        if (Model.FavMovies.Any(f => f.MovieId == movie.Id))
+                                        {
+
+                                            <form asp-action="AddToFavorites">
+                                                <input type="hidden" name="movieId" value="@movie.Id" />
+                                                <button type="submit" class="btn btn-link">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
+                                                        <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z" />
+                                                    </svg>
+                                                </button>
+                                            </form>
+                                        }
+                                        else
+                                        {
+                                            <form asp-action="AddToFavorites">
+                                                <input type="hidden" name="movieId" value="@movie.Id" />
+                                                <button type="submit" class="btn btn-link">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16">
+                                                        <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.920 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01L8 2.748zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15z" />
+                                                    </svg>
+                                                </button>
+                                            </form>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <div>
+                                            <a href="Identity/Account/Login" class="btn btn-link">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16">
+                                                    <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.920 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01L8 2.748zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15z" />
+                                                </svg>
+                                            </a>
+                                        </div>
+                                    }
+
+
                                 </div>
                             </div>
                         }
                     </div>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2 class="scroll-box font-weight-light">Popular Movies</h2>
+        <div class="wrapper ">
+            <div class="movie-list">
+                @foreach (var movie in Model.PopularMovies)
+                {
+                    <div class="movie-card cardn">
+
+                        <img src="https://www.themoviedb.org/t/p/w1280/@movie.backdrop_path" alt="Movie poster" class="movie-poster">
+                        <div class="movie-info">
+                            <h1 class="movie-title">@movie.Title</h1>
+                        </div>
+                        <div class="rate-circle">
+                            <span class="rating">@(movie.vote_average * 10)&"%"</span>
+                        </div>
+                        <div class="details">
+                            <div class="movie-info">
+                                <h3 class="movie-title">@movie.Title</h3>
+                                @*<button class="btn-watch">Watch Now</button>*@
+                            </div>
+                            <h1>
+                                @if (movie.adult)
+                                {
+                                    <span>+18</span>
+                                }
+
+                            </h1>
+                            <h2>Release Date:@movie.release_date</h2>
+                            <div class="tags">
+                                <span class="tag">@movie.original_language</span>
+                            </div>
+                            <p class="desc">
+                                @if (!string.IsNullOrEmpty(movie.overview))
+                                {
+                                    @Html.Raw(movie.overview.Length > 250 ? $"{movie.overview.Substring(0, 250)}..." : movie.overview)
+                                }
+                            </p>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2 class="scroll-box font-weight-light">Now Playing</h2>
+        <div class="wrapper ">
+            <div class="movie-list">
+                @foreach (var movie in Model.NowPlayingMovies)
+                {
+                    <div class="movie-card cardn">
+
+                        <img src="https://www.themoviedb.org/t/p/w1280/@movie.backdrop_path" alt="Movie poster" class="movie-poster">
+                        <div class="movie-info">
+                            <h1 class="movie-title">@movie.Title</h1>
+                            @*<button class="btn-watch">Watch Now</button>*@
+                        </div>
+                        <div class="details">
+                            <h1>
+                                @if (movie.adult)
+                                {
+                                    <span>+18</span>
+                                }
+
+                            </h1>
+                            <h2>Release Date:@movie.release_date</h2>
+                            <div class="tags">
+                                <span class="tag">@movie.original_language</span>
+
+                            </div>
+                            <div class="rate-circle">
+                                <span class="rating">@(movie.vote_average * 10)&"%"</span>
+                            </div>
+                            <p class="desc">
+                                @if (!string.IsNullOrEmpty(movie.overview))
+                                {
+                                    @Html.Raw(movie.overview.Length > 240 ? $"{movie.overview.Substring(0, 240)}..." : movie.overview)
+                                }
+                            </p>
+                        </div>
+                    </div>
+                }
             </div>
         </div>
     </section>
@@ -144,21 +309,37 @@
 
 
 </body>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>$(document).ready(function () {
-        // Function to update a random movie image
-        function updateRandomMovieImage(imageId, callback) {
-            $.get('/api/random', function (data) {
-                $(imageId).attr('src', data);
-                if (typeof callback === 'function') {
-                    callback();
-                }
-            });
-        }
-        // Call the function for each random movie image sequentially
-        updateRandomMovieImage('#randomMovieImage1', function () {
-            updateRandomMovieImage('#randomMovieImage2', function () {
-                updateRandomMovieImage('#randomMovieImage3');
-            });
-        });
-    });</script>
+
+
+<script>
+    const ratings = document.querySelectorAll(".rating");
+
+    // Iterate over all rating items
+    ratings.forEach((rating) => {
+        // Get content and get score as an int
+        const ratingContent = rating.innerHTML;
+        const ratingScore = parseInt(ratingContent, 10);
+
+        // Define if the score is good, meh or bad according to its value
+        const scoreClass =
+            ratingScore < 40 ? "bad" : ratingScore < 60 ? "meh" : "good";
+
+        // Add score class to the rating
+        rating.classList.add(scoreClass);
+
+        // After adding the class, get its color
+        const ratingColor = window.getComputedStyle(rating).backgroundColor;
+
+        // Define the background gradient according to the score and color
+        const gradient = `background: conic-gradient(${ratingColor} ${ratingScore}%, transparent 0 100%)`;
+
+
+        // Set the gradient as the rating background
+        rating.setAttribute("style", gradient);
+
+        // Wrap the content in a tag to show it above the pseudo element that masks the bar
+        rating.innerHTML = `<span>${ratingScore} ${ratingContent.indexOf("%") >= 0 ? "<small>%</small>" : ""
+            }</span>`;
+    });
+
+</script>
