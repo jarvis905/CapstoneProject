@@ -8,6 +8,8 @@ using CapstoneProject.Data;
 using CapstoneProject.Models;
 using System.Diagnostics.Eventing.Reader;
 using Microsoft.AspNetCore.Mvc.Filters;
+using CapstoneProject.Controllers;
+using System.Diagnostics;
 
 namespace CapstoneProject.Controllers
 {
@@ -32,16 +34,19 @@ namespace CapstoneProject.Controllers
         [HttpGet("movie/{id}")]
         public async Task<IActionResult> SingleMovie(int id)
         {
+            
+            var MovieData = await _context.Movies.Where(r => r.Id == id).ToListAsync();
+            var ReviewList = await _context.Reviews.Where(r => r.MovieId == id).ToListAsync();
 
-            var selectedMovie = await _context.Movies.FindAsync(id);
-
-            if (selectedMovie == null)
+            var model = new MovieViewModel
             {
-                return NotFound(); 
-            }
-            ViewBag.movie = selectedMovie;
-            return View();
+                MovieData = MovieData,
+                ListReviews = ReviewList
+            };
+
+            return View(model);
         }
+
 
         // API endpoint to get all the Movies
         [HttpGet("getall")]
@@ -107,7 +112,6 @@ namespace CapstoneProject.Controllers
             {
                 movie.Title = editedMovie.Title;
             }
-
 
             if (editedMovie.ReleaseDate != null)
             {

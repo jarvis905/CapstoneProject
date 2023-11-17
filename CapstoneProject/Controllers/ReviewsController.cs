@@ -45,7 +45,7 @@ namespace CapstoneProject.Controllers
                 MovieTitle = r.Movie.Title,  // Select only the title of the related movie
                 r.UserId,
                 UserName = r.User.UserName,  // Select only the username of the related user
-                r.Rating,
+                r.UserRate,
                 r.Comment,
                 r.Timestamp
             })
@@ -59,13 +59,15 @@ namespace CapstoneProject.Controllers
         [Produces("application/json")]
         public async Task<ActionResult<Reviews>> GetReviews(int movieid)
         {
-            var reviews = from r in _context.Reviews select r;
+            // var reviews = from r in _context.Reviews select r;
+            var reviews = (IQueryable<Reviews>)GetAll();
             reviews = reviews.Where(r => r.MovieId == movieid);
             if (reviews == null)
             {
                 return NotFound();
             }
-            return Ok(await reviews.ToListAsync());
+            // ViewBag.reviews = reviews;
+            return Ok(reviews);
         }
 
         // API endpoint to get reviews of a specific User by ID
@@ -110,7 +112,7 @@ namespace CapstoneProject.Controllers
 
             review.Comment = editedReview.Comment;
 
-            review.Rating = review.Rating;
+            review.UserRate = review.UserRate;
 
             await _context.SaveChangesAsync();
 
