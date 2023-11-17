@@ -1,17 +1,136 @@
-﻿<!DOCTYPE html>
+﻿<!doctype html>
 <html lang="en">
 <head>
     <title>User Profile</title>
     <!-- Include your CSS and JavaScript files as needed -->
+    <title>@ViewData["Title"] = "MyAccount";</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <style>
+        /* Custom CSS to set the background color and text color */
+        .bg-dark-text-white {
+            background-color: black;
+            color: white;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 </head>
+
 <body>
-    <h1>User Profile</h1>
-    <div class="user-profile">
-        <img src="user_profile_picture.jpg" alt="User Profile Picture">
-        <h2>User's Name</h2>
-        <p>Email: user@example.com</p>
-        <!-- Add more user details here -->
-    </div>
-    <a href="/edit-profile">Edit Profile</a>
+
+    <!-- Header Section -->
+    <header>
+        <h1>Welcome, @Model.UserName</h1>
+        <!-- Add other welcome information if needed -->
+    </header>
+
+    <!-- Purchase History Section -->
+    <section>
+        <h2>Purchase History</h2>
+        <!-- Display a list of user's purchase history with movie details -->
+        <!-- Each entry should include movie picture, title, show time, etc. -->
+        <div class="record">
+            <dl class="record-list module_recordlist">
+                <dt><span class="data-title">&nbsp;&nbsp;Recent Purchase</span></dt>
+                <dd>
+                    <div class="g-col g-col-per">
+                        <div class="g-box">
+                            <div class="categorypack_yk_pack pack_cover_icon" type="horizontal">
+                                <div class="categorypack_pack_cover">
+                                    <div class="categorypack_pack_close" href="javascript:void(0);" title="recent purchase"></div>
+                                    <a href="javascript:void(0);" title="" target="">
+                                        <img src="https://www.instyle.com/thmb/FDYd4qtwpGmFhduQpPB3LA805bs=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/BarbiePosterEmbed-de7c886812184414977730e920d77a65.jpg" class="" width="180" height="300">
+                                        <div class="categorypack_bg"></div>
+                                        <div class="categorypack_p_bg">
+                                            <span class="categorypack_p_rb undefined"><span></span></span>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="categorypack_info_list">
+                                    <div class="categorypack_title "><a class="categorypack_not_hover_title" href="javascript:void(0);" target="" title="Barbie">Barbie</a></div>
+                                    <div class="categorypack_subtitle categorypack_pink_subtitle">Show Time: 2023-10-12 18:00</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Continue the structure for other items -->
+                </dd>
+            </dl>
+        </div>
+
+
+
+    </section>
+
+    <!-- Recommended Movies Section -->
+    <section>
+        <h2>You May Like</h2>
+        <!-- Display a list of recommended movies with thumbnail and title -->
+        <!-- This can be populated by your recommendation system's advice -->
+        <div class="Recommendation">
+            <dl class="recommendation-list module_recommendationlist">
+                <dt><span class="data-title">&nbsp;&nbsp;Recommend for you</span></dt>
+                <dd>
+                    <div class="g-col g-col-per">
+                        <div class="g-box">
+                            <div class="categorypack_yk_pack pack_cover_icon" type="horizontal">
+                                <div class="categorypack_pack_cover">
+                                    <div class="categorypack_pack_close" href="javascript:void(0);" title="recommendation item"></div>
+                                    <a href="javascript:void(0);" title="" target="">
+                                        <img src="https://www.youloveit.com/uploads/posts/2023-09/1695832211_youloveit_com_disney_wish_poster.jpg" class="" width="180" height="300">
+                                        <div class="categorypack_bg"></div>
+                                        <div class="categorypack_p_bg">
+                                            <span class="categorypack_p_rb undefined"><span></span></span>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="categorypack_info_list">
+                                    <div class="categorypack_title "><a class="categorypack_not_hover_title" href="javascript:void(0);" target="" title="Wish">Wish</a></div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Continue the structure for other items -->
+                </dd>
+            </dl>
+        </div>
+    </section>
+
+    <!-- Edit Profile Section -->
+    <section>
+        <h2>Edit Profile Information</h2>
+        <!-- Form to edit user profile information -->
+        <form action="[Your Edit Profile Action]" method="post">
+            <!-- Display current user ID, username, and email in hidden fields -->
+            <input type="hidden" name="userId" value="[User's ID]">
+            <input type="hidden" name="userName" value="[User's Name]">
+            <input type="hidden" name="userEmail" value="[User's Email]">
+
+            <!-- Add fields for users to edit (e.g., new username, new email) -->
+            <label for="newUsername">New Username:</label>
+            <input type="text" id="newUsername" name="newUsername">
+
+            <label for="newEmail">New Email:</label>
+            <input type="email" id="newEmail" name="newEmail">
+
+            <!-- Add more fields as needed -->
+
+            <button type="submit">Save Changes</button>
+        </form>
+    </section>
+
+    <!-- Add other sections or elements as needed -->
+
 </body>
 </html>
+
+<h1>User Profile</h1>
+
+<div>
+    <p><strong>User ID:</strong> @Model.UserId</p>
+    <p><strong>Username:</strong> @Model.UserName</p>
+    <p><strong>Email:</strong> @Model.Email</p>
+    <!-- Add other user-related properties as needed -->
+</div>
+
+
