@@ -1,3 +1,5 @@
+The provided Python code defines a Flask-based web API for movie recommendations using collaborative filtering with the Surprise library. The API connects to a Microsoft SQL Server database, retrieves user ratings for movies from a 'Reviews' table, and uses collaborative filtering to predict movie ratings for a specified user. The API exposes a single endpoint (/api/get_collaborative_recommendations) that accepts a user_id as a query parameter. Upon receiving a request, the API loads the user ratings, trains a collaborative filtering model using the Surprise library's SVD algorithm, and then generates movie recommendations for the specified user. The recommendations are based on predicted ratings for movies the user has not rated before. The results, including the user_id and a list of collaborative recommendations, are returned in JSON format.
+http://127.0.0.1:5000/api/get_collaborative_recommendations?user_id=1863273d-4e0c-4b2b-b832-5ad8d7378718
 
 Project Requirements:
 
