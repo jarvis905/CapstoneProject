@@ -64,7 +64,8 @@ def api_get_collaborative_recommendations():
     try:
         user_id = request.args.get('user_id')
         recommendations = get_collaborative_recommendations(user_id)
-        return jsonify({'user_id': user_id, 'collaborative_recommendations': recommendations})
+        # return jsonify({'user_id': user_id, 'results': recommendations})
+        return jsonify({'UserId': user_id, 'results': [{'MovieId': int(movie_id)} for movie_id in recommendations]})
 
     except Exception as e:
         return jsonify({'error': str(e)})

@@ -7,6 +7,8 @@ namespace CapstoneProject.Models
 	{
         public int Id { get; set; }
 
+        public int MovieID { get; set; }
+
         [Required]
         public string Title { get; set; }
 
@@ -14,15 +16,15 @@ namespace CapstoneProject.Models
         [Display(Name = "Release Date")]
         public DateTime ReleaseDate { get; set; }
 
-        public string Director { get; set; }
+        public string? Director { get; set; }
 
-        public string Writer { get; set; }
+        public string? Writer { get; set; }
 
-        public string Actores { get; set; }
+        public string? Actores { get; set; }
 
         public string Language { get; set; }
 
-        public string Country { get; set; }
+        public string? Country { get; set; }
 
         [MaxLength(500)]
         public string Description { get; set; }
@@ -30,12 +32,12 @@ namespace CapstoneProject.Models
         [Display(Name = "Poster Image URL")]
         public string PosterImageUrl { get; set; }
 
-        public string RunTime { get; set; }
+        public string? RunTime { get; set; }
 
         [Display(Name = "Age Rating")]
-        public string MovieRating { get; set; }
+        public string? MovieRating { get; set; }
 
-        public long BoxOffice { get; set; }
+        public long? BoxOffice { get; set; }
     }
 }
 
