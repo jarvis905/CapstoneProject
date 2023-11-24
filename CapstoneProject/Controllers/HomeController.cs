@@ -25,12 +25,59 @@ public class HomeController : Controller
     public async Task<IActionResult> Index()
     {
 
+        // Retrieve popular and now playing movies from external APIs
         var popularMovies = await GetMovies("upcoming");
         var nowPlayingMovies = await GetMovies("now_playing");
 
+        // Get the list of local movies from the database
         var localMovies = await _context.Movies.ToListAsync();
+
+        // Check and add new popular movies to the local database
+        foreach (var popularMovie in popularMovies)
+        {
+            if (!localMovies.Any(m => m.MovieID == popularMovie.id))
+            {
+                _context.Movies.Add(new Movies
+                {
+                    // Map the properties from popularMovie to the Movies entity
+                    MovieID = popularMovie.id,
+                    Title = popularMovie.Title,
+                    ReleaseDate = DateTime.Parse(popularMovie.release_date),
+                    Description = popularMovie.overview,
+                    PosterImageUrl = "https://www.themoviedb.org/t/p/w1280" + popularMovie.backdrop_path,
+                    Language = popularMovie.original_language
+                });
+            }
+        }
+
+        // Check and add new now playing movies to the local database
+        foreach (var nowPlayingMovie in nowPlayingMovies)
+        {
+            if (!localMovies.Any(m => m.MovieID == nowPlayingMovie.id))
+            {
+                _context.Movies.Add(new Movies
+                {
+                    // Map the properties from nowPlayingMovie to the Movies entity
+                    MovieID = nowPlayingMovie.id,
+                    Title = nowPlayingMovie.Title,
+                    ReleaseDate = DateTime.Parse(nowPlayingMovie.release_date),
+                    Description = nowPlayingMovie.overview,
+                    PosterImageUrl = "https://www.themoviedb.org/t/p/w1280" + nowPlayingMovie.backdrop_path,
+                    Language = nowPlayingMovie.original_language
+                });
+            }
+        }
+
+        // Save changes to the local database
+        await _context.SaveChangesAsync();
+
+        // Retrieve the latest list of local movies
+        localMovies = await _context.Movies.ToListAsync();
+
+        // Retrieve favorite movies from the local database
         var favMovies = await _context.FavMovies.ToListAsync();
 
+        // Create the view model
         var model = new MoviesViewModel
         {
             LocalMovies = localMovies,
@@ -39,6 +86,7 @@ public class HomeController : Controller
             FavMovies = favMovies
         };
 
+        // Pass the view model to the view
         return View(model);
     }
 
@@ -122,6 +170,28 @@ public class HomeController : Controller
         await _context.SaveChangesAsync();
 
         return RedirectToAction("Index");
+    }
+
+
+    public async Task<IActionResult> MovieDetails(int movieId)
+    {
+        // Retrieve the movie details from the local database based on the movieId
+        var movie = await _context.Movies.FirstOrDefaultAsync(m => m.MovieID == movieId);
+
+        if (movie == null)
+        {
+            // Handle the case where the movie is not found
+            return NotFound();
+        }
+
+        // Create a view model for the movie details
+        var MovieDetails = new MoviesViewModel
+        {
+            MovieDetails = movie,
+            
+        };
+
+        return View(movie);
     }
 }
 

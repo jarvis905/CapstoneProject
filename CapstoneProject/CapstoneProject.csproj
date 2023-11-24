@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <None Remove="Data\Migrations\" />
+    <None Remove="Views\MovieDetails\" />
   </ItemGroup>
   <ItemGroup>
     <None Update="app.db" CopyToOutputDirectory="PreserveNewest" ExcludeFromSingleFile="true" />
@@ -31,5 +32,6 @@
 
   <ItemGroup>
     <Folder Include="Data\Migrations\" />
+    <Folder Include="Views\MovieDetails\" />
   </ItemGroup>
 </Project>

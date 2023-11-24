@@ -5,6 +5,8 @@ namespace CapstoneProject.Models
 
     public class TheMoviedbModel
 	{
+        public int id { get; set; }
+
         public string Title { get; set; }
 
         public string backdrop_path { get; set; }

@@ -13,6 +13,9 @@ namespace CapstoneProject.Models
 
         // Get list of now playing movies from API
         public List<TheMoviedbModel> NowPlayingMovies { get; set; }
+
+        public Movies MovieDetails { get; set; }
+        public List<Reviews> MovieReviews { get; set; }
     }
 }
 

@@ -1,6 +1,6 @@
 ﻿@*@model IEnumerable<CapstoneProject.Models.Movies>*@
 @model CapstoneProject.Models.MoviesViewModel
-
+@using System.Security.Claims;
 @{
     ViewData["Title"] = "Home Page";
 }
@@ -130,7 +130,8 @@
 
                                     @if (User.Identity.IsAuthenticated)
                                     {
-                                        if (Model.FavMovies.Any(f => f.MovieId == movie.Id))
+                                        var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+                                        if (Model.FavMovies.Any(f => f.MovieId == movie.Id && f.UserId == userId))
                                         {
 
                                             <form asp-action="AddToFavorites">
@@ -182,37 +183,38 @@
                 @foreach (var movie in Model.PopularMovies)
                 {
                     <div class="movie-card cardn">
-
-                        <img src="https://www.themoviedb.org/t/p/w1280/@movie.backdrop_path" alt="Movie poster" class="movie-poster">
-                        <div class="movie-info">
-                            <h1 class="movie-title">@movie.Title</h1>
-                        </div>
-                        <div class="rate-circle">
-                            <span class="rating">@(movie.vote_average * 10)&"%"</span>
-                        </div>
-                        <div class="details">
+                        <a asp-controller="MovieDetails" asp-action="Index" asp-route-movieId="@movie.id">
+                            <img src="https://www.themoviedb.org/t/p/w1280/@movie.backdrop_path" alt="Movie poster" class="movie-poster">
                             <div class="movie-info">
-                                <h3 class="movie-title">@movie.Title</h3>
-                                @*<button class="btn-watch">Watch Now</button>*@
+                                <h1 class="movie-title">@movie.Title</h1>
                             </div>
-                            <h1>
-                                @if (movie.adult)
-                                {
-                                    <span>+18</span>
-                                }
+                        </a>
+                            <div class="rate-circle">
+                                <span class="rating">@(movie.vote_average * 10)&"%"</span>
+                            </div>
+                            <div class="details">
+                                <div class="movie-info">
+                                    <h3 class="movie-title">@movie.Title</h3>
+                                    @*<button class="btn-watch">Watch Now</button>*@
+                                </div>
+                                <h1>
+                                    @if (movie.adult)
+                                    {
+                                        <span>+18</span>
+                                    }
 
-                            </h1>
-                            <h2>Release Date:@movie.release_date</h2>
-                            <div class="tags">
-                                <span class="tag">@movie.original_language</span>
+                                </h1>
+                                <h2>Release Date:@movie.release_date</h2>
+                                <div class="tags">
+                                    <span class="tag">@movie.original_language</span>
+                                </div>
+                                <p class="desc">
+                                    @if (!string.IsNullOrEmpty(movie.overview))
+                                    {
+                                        @Html.Raw(movie.overview.Length > 250 ? $"{movie.overview.Substring(0, 250)}..." : movie.overview)
+                                    }
+                                </p>
                             </div>
-                            <p class="desc">
-                                @if (!string.IsNullOrEmpty(movie.overview))
-                                {
-                                    @Html.Raw(movie.overview.Length > 250 ? $"{movie.overview.Substring(0, 250)}..." : movie.overview)
-                                }
-                            </p>
-                        </div>
                     </div>
                 }
             </div>
@@ -226,35 +228,36 @@
                 @foreach (var movie in Model.NowPlayingMovies)
                 {
                     <div class="movie-card cardn">
-
-                        <img src="https://www.themoviedb.org/t/p/w1280/@movie.backdrop_path" alt="Movie poster" class="movie-poster">
-                        <div class="movie-info">
-                            <h1 class="movie-title">@movie.Title</h1>
-                            @*<button class="btn-watch">Watch Now</button>*@
-                        </div>
-                        <div class="details">
-                            <h1>
-                                @if (movie.adult)
-                                {
-                                    <span>+18</span>
-                                }
-
-                            </h1>
-                            <h2>Release Date:@movie.release_date</h2>
-                            <div class="tags">
-                                <span class="tag">@movie.original_language</span>
-
+                        <a asp-controller="MovieDetails" asp-action="Index" asp-route-movieId="@movie.id">
+                            <img src="https://www.themoviedb.org/t/p/w1280/@movie.backdrop_path" alt="Movie poster" class="movie-poster">
+                            <div class="movie-info">
+                                <h1 class="movie-title">@movie.Title</h1>
+                                @*<button class="btn-watch">Watch Now</button>*@
                             </div>
-                            <div class="rate-circle">
-                                <span class="rating">@(movie.vote_average * 10)&"%"</span>
+                        </a>
+                            <div class="details">
+                                <h1>
+                                    @if (movie.adult)
+                                    {
+                                        <span>+18</span>
+                                    }
+
+                                </h1>
+                                <h2>Release Date:@movie.release_date</h2>
+                                <div class="tags">
+                                    <span class="tag">@movie.original_language</span>
+
+                                </div>
+                                <div class="rate-circle">
+                                    <span class="rating">@(movie.vote_average * 10)&"%"</span>
+                                </div>
+                                <p class="desc">
+                                    @if (!string.IsNullOrEmpty(movie.overview))
+                                    {
+                                        @Html.Raw(movie.overview.Length > 240 ? $"{movie.overview.Substring(0, 240)}..." : movie.overview)
+                                    }
+                                </p>
                             </div>
-                            <p class="desc">
-                                @if (!string.IsNullOrEmpty(movie.overview))
-                                {
-                                    @Html.Raw(movie.overview.Length > 240 ? $"{movie.overview.Substring(0, 240)}..." : movie.overview)
-                                }
-                            </p>
-                        </div>
                     </div>
                 }
             </div>
@@ -311,8 +314,7 @@
 </body>
 
 
-<script>
-    const ratings = document.querySelectorAll(".rating");
+<script>const ratings = document.querySelectorAll(".rating");
 
     // Iterate over all rating items
     ratings.forEach((rating) => {
@@ -340,6 +342,4 @@
         // Wrap the content in a tag to show it above the pseudo element that masks the bar
         rating.innerHTML = `<span>${ratingScore} ${ratingContent.indexOf("%") >= 0 ? "<small>%</small>" : ""
             }</span>`;
-    });
-
-</script>
+    });</script>

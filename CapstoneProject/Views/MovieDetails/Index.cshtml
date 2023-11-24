@@ -1,0 +1,25 @@
+﻿@model CapstoneProject.Models.MoviesViewModel
+
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+           
+            <img src="@Model.MovieDetails.PosterImageUrl" alt="Movie Poster" class="img-fluid mb-4">
+
+           
+            <h2>@Model.MovieDetails.Title</h2>
+            <p><strong>Release Date:</strong> @Model.MovieDetails.ReleaseDate.ToShortDateString()</p>
+      
+            <h3>Description</h3>
+            <p>@Model.MovieDetails.Description</p>
+
+
+        </div>
+
+        <div class="col-md-6">
+          
+        </div>
+    </div>
+</div>
