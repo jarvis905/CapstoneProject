@@ -1,4 +1,6 @@
 ﻿using System;
+using Microsoft.AspNetCore.Identity;
+
 namespace CapstoneProject.Models
 {
 	public class MoviesViewModel
@@ -15,7 +17,14 @@ namespace CapstoneProject.Models
         public List<TheMoviedbModel> NowPlayingMovies { get; set; }
 
         public Movies MovieDetails { get; set; }
+
         public List<Reviews> MovieReviews { get; set; }
+
+        public Reviews PostReview { get; set; }
+
+        public UserManager<IdentityUser> UserManager { get; set; }
+
+        public List<MovieTrailer> MovieTrailers { get; set; }
     }
 }
 

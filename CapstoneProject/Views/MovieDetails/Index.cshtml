@@ -1,25 +1,160 @@
 ﻿@model CapstoneProject.Models.MoviesViewModel
+@using Microsoft.AspNetCore.Identity
+@using System.Security.Claims;
 
+@{
+    ViewData["Title"] = "Movie Details";
+}
 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="~/css/MovieDetailsStyle.css">
+</head>
 
-<div class="container">
-    <div class="row">
-        <div class="col-md-6">
-           
-            <img src="@Model.MovieDetails.PosterImageUrl" alt="Movie Poster" class="img-fluid mb-4">
+<div>
+    <div>
 
-           
-            <h2>@Model.MovieDetails.Title</h2>
-            <p><strong>Release Date:</strong> @Model.MovieDetails.ReleaseDate.ToShortDateString()</p>
-      
-            <h3>Description</h3>
-            <p>@Model.MovieDetails.Description</p>
-
-
+        <div id="moviePosterContainer">
+            <img src="@Model.MovieDetails.PosterImageUrl" alt="Movie Poster" style="max-width: 100%; height: auto; margin-bottom: 10px; position: relative;">
+            <!-- Play Button -->
+            <button id="playButton" onclick="openModal()"><svg fill="#000000" height="211px" width="211px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <g> <path d="M435.574,59.858H76.426C34.285,59.858,0,94.143,0,136.284v171.023c0,4.427,3.589,8.017,8.017,8.017 c4.427,0,8.017-3.589,8.017-8.017V136.284c0-33.3,27.092-60.393,60.393-60.393h359.148c33.3,0,60.393,27.092,60.393,60.393 v239.432c0,33.3-27.092,60.393-60.393,60.393H76.426c-33.3,0-60.393-27.092-60.393-60.393v-34.205 c0-4.427-3.589-8.017-8.017-8.017c-4.427,0-8.017,3.589-8.017,8.017v34.205c0,42.141,34.285,76.426,76.426,76.426h359.148 c42.141,0,76.426-34.285,76.426-76.426V136.284C512,94.143,477.715,59.858,435.574,59.858z"></path> </g> </g> <g> <g> <path d="M362.982,249.278l-34.205-22.233c-3.712-2.412-8.677-1.359-11.091,2.353c-2.412,3.712-1.36,8.677,2.353,11.091 l23.864,15.511l-148.296,96.394V159.607l98.779,64.206c3.711,2.411,8.678,1.359,11.09-2.353c2.414-3.712,1.36-8.677-2.353-11.091 l-111.165-72.256c-5.24-3.407-12.384,0.491-12.384,6.721v222.33c0,6.226,7.142,10.131,12.385,6.721l171.023-111.165 C367.761,259.615,367.76,252.385,362.982,249.278z"></path> </g> </g> </g></svg></button>
         </div>
 
-        <div class="col-md-6">
-          
+
+        <h2>@Model.MovieDetails.Title</h2>
+        <p><strong>Release Date:</strong> @Model.MovieDetails.ReleaseDate.ToShortDateString()</p>
+
+        <h3>Description</h3>
+        <p>@Model.MovieDetails.Description</p>
+    </div>
+
+    <div>
+        <div>
+            <h3>User Reviews</h3>
+
+            @foreach (var review in Model.MovieReviews)
+            {
+                var user = await Model.UserManager.FindByIdAsync(review.UserId);
+
+                <div class="user-review">
+                    <div class="review-header">
+                        <div>
+                            <svg width="32px" height="32px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <circle opacity="0.5" cx="12" cy="9" r="3" stroke="#1C274C" stroke-width="1.5"></circle> <circle cx="12" cy="12" r="10" stroke="#1C274C" stroke-width="1.5"></circle> <path opacity="0.5" d="M17.9691 20C17.81 17.1085 16.9247 15 11.9999 15C7.07521 15 6.18991 17.1085 6.03076 20" stroke="#1C274C" stroke-width="1.5" stroke-linecap="round"></path> </g></svg>
+                            <span class="user-name">@user.UserName</span>
+                            <svg width="24px" height="24px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><defs><style>.a,.b{fill:none;stroke:#606060;stroke-linecap:round;stroke-width:1.5px;}.a{stroke-linejoin:round;}.b{stroke-linejoin:bevel;}</style></defs><path class="a" d="M2.5,21.02394l.78984-2.87249c1.30656-4.75167,4.7927-7.16185,8.24449-7.16185"></path><circle class="b" cx="11.5" cy="5.99202" r="5"></circle><circle class="a" cx="16.5" cy="18.00798" r="5"></circle><path class="a" d="M16.08284,20l1.85858-1.85858a.2.2,0,0,0,0-.28284L16.08284,16"></path></g></svg>
+                            <span class="user-rate">
+                                Rate: @review.UserRate
+                            </span>
+                        </div>
+                        <span class="review-timestamp">
+                            @review.Timestamp.ToString("yyyy-MM-dd")
+                            <script>
+                                var reviewDate = new Date("@review.Timestamp.ToString("yyyy-MM-ddTHH:mm:ss")");
+                                var currentDate = new Date();
+                                var timeDifference = currentDate - reviewDate;
+                                var daysAgo = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+                                document.write("  (" + daysAgo + " days ago)");
+                            </script>
+                        </span>
+                    </div>
+                    <div class="review-body">
+                        <p class="comment">@review.Comment</p>
+                    </div>
+                </div>
+            }
         </div>
     </div>
+
 </div>
+
+<div id="myModal">
+    <div id="myModal-content">
+        <span id="closeBtn" onclick="closeModal()">&times;</span>
+
+        @if (Model.MovieTrailers != null && Model.MovieTrailers.Any())
+        {
+            var officialTrailer = Model.MovieTrailers.FirstOrDefault(trailer => trailer.name.Contains("Trailer"));
+
+            <script>
+                console.log("Official Trailer:", @Json.Serialize(officialTrailer));
+            </script>
+
+            @if (officialTrailer != null)
+            {
+                <iframe id="trailerVideo" class="trailerVideo" width="800" height="600" src="https://www.youtube.com/embed/@officialTrailer.Key?autoplay=1&mute=1" frameborder="0" allowfullscreen></iframe>
+            }
+            else
+            {
+                <p>No official trailer available</p>
+            }
+        }
+        else
+        {
+            <p>No trailers available</p>
+        }
+    </div>
+
+</div>
+
+@if (User.Identity.IsAuthenticated)
+    {
+    <div class="card">
+        <div class="card-body">
+            @using (Html.BeginForm("PostReview", "Reviews", FormMethod.Post, new { id = "reviewForm", @class = "needs-validation", novalidate = "true" }))
+                {
+                @Html.AntiForgeryToken()
+
+                <input type="hidden" name="movieId" value="@Model.MovieDetails.Id" />
+                <input type="hidden" name="userId" value="@User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value" />
+                <label for="comment">Rate:</label>
+                <div class="form-group star-rating">
+                    <label for="userRate"></label>
+                    <input type="radio" id="star5" name="userRate" value="5" /><label for="star5">&#9733;</label>
+                    <input type="radio" id="star4" name="userRate" value="4" /><label for="star4">&#9733;</label>
+                    <input type="radio" id="star3" name="userRate" value="3" /><label for="star3">&#9733;</label>
+                    <input type="radio" id="star2" name="userRate" value="2" /><label for="star2">&#9733;</label>
+                    <input type="radio" id="star1" name="userRate" value="1" /><label for="star1">&#9733;</label>
+                    <div class="invalid-feedback">
+                        Please provide a valid rating.
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="comment">Comment:</label>
+                    <textarea name="comment" class="form-control" required></textarea>
+                    <div class="invalid-feedback">
+                        Please provide a comment.
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Submit Review</button>
+                }
+        </div>
+    </div>
+    }
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script>// Function to open the modal and play the video
+        function openModal() {
+            var modal = document.getElementById('myModal');
+            if (modal) {
+                modal.style.display = 'block';
+
+            }
+        }
+
+        // Function to close the modal and stop the video
+        function closeModal() {
+            var modal = document.getElementById('myModal');
+            if (modal) {
+                modal.style.display = 'none';
+                var trailerVideo = document.getElementById('trailerVideo');
+                if (trailerVideo) {
+                    // Remove the iframe from the DOM to stop the video
+                    trailerVideo.parentNode.removeChild(trailerVideo);
+                }
+            }
+        }</script>
+
+
+

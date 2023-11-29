@@ -23,7 +23,7 @@ namespace CapstoneProject.Models
         public IdentityUser User { get; set; } // Using a custom ApplicationUser if needed later
 
         [Range(1, 5, ErrorMessage = "The rating must be between 1 and 10.")]
-        public int Rating { get; set; }
+        public float UserRate { get; set; }
 
         [MaxLength(500)] 
         public string Comment { get; set; }

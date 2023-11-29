@@ -45,7 +45,7 @@ namespace CapstoneProject.Controllers
                 MovieTitle = r.Movie.Title,  // Select only the title of the related movie
                 r.UserId,
                 UserName = r.User.UserName,  // Select only the username of the related user
-                r.Rating,
+                r.UserRate,
                 r.Comment,
                 r.Timestamp
             })
@@ -82,19 +82,6 @@ namespace CapstoneProject.Controllers
             return Ok(await reviews.ToListAsync());
         }
 
-        // API endpoint to post a review for a movie
-        [HttpPost("write")]
-        [Produces("application/json")]
-        public async Task<ActionResult<Reviews>> WriteReview([FromBody] Reviews review)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Reviews.Add(review);
-                await _context.SaveChangesAsync();
-                return CreatedAtAction("GetReviews", new { id = review.Id }, review);
-            }
-            return BadRequest(ModelState);
-        }
 
         // API endpoint to edit a review
         [HttpPut("edit/{id}")]
@@ -110,7 +97,7 @@ namespace CapstoneProject.Controllers
 
             review.Comment = editedReview.Comment;
 
-            review.Rating = review.Rating;
+            review.UserRate = review.UserRate;
 
             await _context.SaveChangesAsync();
 
@@ -130,5 +117,47 @@ namespace CapstoneProject.Controllers
             await _context.SaveChangesAsync();
             return NoContent();
         }
+
+        // API endpoint to post a review
+        [HttpPost("write")]
+        [Produces("application/json")]
+        public async Task<IActionResult> PostReview()
+        {
+            // Check if the user is authenticated
+            if (User.Identity.IsAuthenticated)
+            {
+                try
+                {
+                    // Retrieve parameters from the form data
+                    string userId = Request.Form["userId"];
+                    float userRate = float.Parse(Request.Form["userRate"]); 
+                    int movieId = int.Parse(Request.Form["movieId"]); 
+                    string comment = Request.Form["comment"];
+
+                    // Create a new Reviews object
+                    var review = new Reviews
+                    {
+                        UserId = userId,
+                        UserRate = userRate,
+                        Comment = comment,
+                        MovieId = movieId,
+                        Timestamp = DateTime.Now
+                    };
+
+                    // Add the review to the database
+                    _context.Reviews.Add(review);
+                    await _context.SaveChangesAsync();
+                    return Redirect(Request.Headers["Referer"].ToString());
+                }
+                catch (Exception ex)
+                {
+                    Console.Error.WriteLine($"Error saving review: {ex.Message}");
+                    return StatusCode(500, "Internal Server Error");
+                }
+            }
+
+            return Unauthorized();
+        }
+
     }
 }

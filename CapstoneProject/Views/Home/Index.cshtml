@@ -111,7 +111,7 @@
                 </div>
                 <div class="col-md-6">
                     <div class="list-group fancy-scrollarea" id="movieScroll">
-                        @foreach (var movie in Model.LocalMovies.Take(10).OrderByDescending(m => m.ReleaseDate))
+                        @foreach (var movie in Model.LocalMovies.Take(15).OrderByDescending(m => m.ReleaseDate))
                         {
                             <div class="card mb-4">
                                 <div class="row no-gutters">
@@ -166,7 +166,6 @@
                                         </div>
                                     }
 
-
                                 </div>
                             </div>
                         }
@@ -188,7 +187,7 @@
                             <div class="movie-info">
                                 <h1 class="movie-title">@movie.Title</h1>
                             </div>
-                        </a>
+
                             <div class="rate-circle">
                                 <span class="rating">@(movie.vote_average * 10)&"%"</span>
                             </div>
@@ -215,6 +214,7 @@
                                     }
                                 </p>
                             </div>
+                        </a>
                     </div>
                 }
             </div>
@@ -234,7 +234,7 @@
                                 <h1 class="movie-title">@movie.Title</h1>
                                 @*<button class="btn-watch">Watch Now</button>*@
                             </div>
-                        </a>
+
                             <div class="details">
                                 <h1>
                                     @if (movie.adult)
@@ -258,11 +258,55 @@
                                     }
                                 </p>
                             </div>
+                        </a>
                     </div>
                 }
             </div>
         </div>
     </section>
+
+
+    <section>
+        @if (User.Identity.IsAuthenticated)
+            {<h2 class="scroll-box font-weight-light">My Favorite List</h2>}
+            <div class="wrapper">
+                <div class="movie-list">
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+                        @foreach (var favoriteMovie in Model.FavMovies.Where(f => f.UserId == userId))
+                        {
+                            var movie = Model.LocalMovies.FirstOrDefault(m => m.Id == favoriteMovie.MovieId);
+
+                            if (movie != null)
+                            {
+                                <div class="movie-card cardn">
+                                    <a asp-controller="MovieDetails" asp-action="Index" asp-route-movieId="@movie.Id">
+                                        <img src="@movie.PosterImageUrl" alt="Movie poster" class="movie-poster">
+                                        <div class="movie-info">
+                                            <h1 class="movie-title">@movie.Title</h1>
+                                        </div>
+
+                                        <div class="details">
+                                            <h2>Release Date: @movie.ReleaseDate</h2>
+                                            <div class="tags">
+                                                <span class="tag">@movie.Language</span>
+                                            </div>
+                                            <p class="desc">
+                                                @if (!string.IsNullOrEmpty(movie.Description))
+                                                {
+                                                    @Html.Raw(movie.Description.Length > 240 ? $"{movie.Description.Substring(0, 240)}..." : movie.Description)
+                                                }
+                                            </p>
+                                        </div>
+                                    </a>
+                                </div>
+                            }
+                        }
+                    }
+                </div>
+            </div>
+        </section>
 
     <section>
         <div class="container">

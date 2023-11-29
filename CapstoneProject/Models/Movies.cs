@@ -38,6 +38,8 @@ namespace CapstoneProject.Models
         public string? MovieRating { get; set; }
 
         public long? BoxOffice { get; set; }
+
+        public string? TrailerKey { get; set; }
     }
 }
 
