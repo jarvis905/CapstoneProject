@@ -8,6 +8,7 @@ using CapstoneProject.Data;
 using CapstoneProject.Models;
 using System.Diagnostics.Eventing.Reader;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.AspNetCore.Identity;
 using CapstoneProject.Controllers;
 using System.Diagnostics;
 
@@ -19,10 +20,12 @@ namespace CapstoneProject.Controllers
     {
 
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public MovieController(ApplicationDbContext context)
+        public MovieController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: /<controller>/
@@ -35,13 +38,20 @@ namespace CapstoneProject.Controllers
         public async Task<IActionResult> SingleMovie(int id)
         {
             
-            var MovieData = await _context.Movies.Where(r => r.Id == id).ToListAsync();
+            var MovieData = await _context.Movies.FirstOrDefaultAsync(r => r.Id == id);
             var ReviewList = await _context.Reviews.Where(r => r.MovieId == id).ToListAsync();
+            
+
+            if (MovieData == null)
+            {
+                return NotFound();
+            }
 
             var model = new MovieViewModel
             {
                 MovieData = MovieData,
-                ListReviews = ReviewList
+                ListReviews = ReviewList,
+                UserManager = _userManager
             };
 
             return View(model);
