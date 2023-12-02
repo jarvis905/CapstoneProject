@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using CapstoneProject.Data;
 using CapstoneProject.Models;
 using Microsoft.AspNetCore.Identity;
+using System.Text.Json;
 
 
 namespace CapstoneProject.Controllers
@@ -87,16 +88,54 @@ namespace CapstoneProject.Controllers
         // API endpoint to post a review for a movie
         [HttpPost("write")]
         [Produces("application/json")]
-        public async Task<ActionResult<Reviews>> WriteReview([FromBody] Reviews review)
+        public async Task<ActionResult<Reviews>> WriteReview()
         {
-            if (ModelState.IsValid)
+            if (User.Identity.IsAuthenticated)
             {
-                _context.Reviews.Add(review);
-                await _context.SaveChangesAsync();
-                return CreatedAtAction("GetReviews", new { id = review.Id }, review);
+                try
+                {
+                    // Retrieve parameters from the form data
+                    string userId = Request.Form["userId"];
+                    int userRate = int.Parse(Request.Form["rating"]); 
+                    int movieId = int.Parse(Request.Form["movieId"]); 
+                    string comment = Request.Form["reviewText"];
+
+                    // Create a new Reviews object
+                    var review = new Reviews
+                    {
+                        UserId = userId,
+                        UserRate = userRate,
+                        Comment = comment,
+                        MovieId = movieId,
+                        Timestamp = DateTime.Now
+                    };
+
+                    // Add the review to the database
+                    _context.Reviews.Add(review);
+                    await _context.SaveChangesAsync();
+                    return Redirect(Request.Headers["Referer"].ToString());
+                }
+                catch (Exception ex)
+                {
+                    Console.Error.WriteLine($"Error saving review: {ex.Message}");
+                    return StatusCode(500, "Internal Server Error");
+                }
             }
-            return BadRequest(ModelState);
+
+            return Unauthorized();
         }
+
+        // public async Task<ActionResult<Reviews>> WriteReview(int movieId, int userId, String review, int rating)
+        // {
+
+        //     if (ModelState.IsValid)
+        //     {
+        //         // _context.Reviews.Add(review);
+        //         // await _context.SaveChangesAsync();
+        //         // return CreatedAtAction("GetReviews", new { id = review.Id }, review);
+        //     }
+        //     return BadRequest(ModelState);
+        // }
 
         // API endpoint to edit a review
         [HttpPut("edit/{id}")]
