@@ -69,7 +69,7 @@
                                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                         </div>
 
-                                        @using (Html.BeginForm("WriteReview", "Reviews", FormMethod.Post, new {id = "reviewForm", @class = "needs-validation", nonvalidate = "true"}))
+                                        @using (Html.BeginForm("PostReview", "Reviews", FormMethod.Post, new {id = "reviewForm", @class = "needs-validation", nonvalidate = "true"}))
                                         {
                                             @Html.AntiForgeryToken()
                                                 <input type="hidden" name="movieId" value="@Model.MovieData.Id" />
@@ -78,11 +78,11 @@
                                             <div class="modal-body">
                                                 <!-- Rating with drag option -->
                                                 
-                                                    <label for="rating">Rating (between 0 to 10):</label>
-                                                    <input type="range" id="rating" name="rating" min="0" max="10">
+                                                    <label for="userRate">Rating (between 0 to 10):</label>
+                                                    <input type="range" id="userRate" name="userRate" min="0" max="10">
                                                     <div class="mb-3 form-group ">
-                                                        <label for="reviewText">Enter review:</label>
-                                                        <textarea class="form-control" name="reviewText" id="reviewText" rows="3" placeholder="Enter review ..."></textarea>
+                                                        <label for="comment">Enter review:</label>
+                                                        <textarea class="form-control" name="comment" id="comment" rows="3" placeholder="Enter review ..."></textarea>
                                                     </div>
                                             </div>
                                     
