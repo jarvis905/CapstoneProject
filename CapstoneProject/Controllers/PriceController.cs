@@ -70,21 +70,26 @@ namespace CapstoneProject.Controllers
             return BadRequest(ModelState);
         }
 
-        //API endpoint to filter the Price
+        // API endpoint to filter the Price
         [HttpGet("filter")]
         [Produces("application/json")]
         public async Task<IActionResult> FilterPrices(string? MovieTitle, string? TheaterName, DateTime? ShowTime)
         {
-            var query = _context.Price.AsQueryable();
+            var query = _context.Price
+                .Include(p => p.Movies)
+                .Include(p => p.Theaters)
+                .AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(MovieTitle))
             {
-                query = query.Where(p => p.Movies.Title.Contains(MovieTitle, StringComparison.OrdinalIgnoreCase));
+                query = query.Where(p => p.Movies.Title.Contains(MovieTitle, StringComparison.OrdinalIgnoreCase))
+                             .Include(p => p.Movies);
             }
 
             if (!string.IsNullOrWhiteSpace(TheaterName))
             {
-                query = query.Where(p => p.Theaters.Name.Contains(TheaterName, StringComparison.OrdinalIgnoreCase));
+                query = query.Where(p => p.Theaters.Name.ToLower().Contains(TheaterName.ToLower()))
+                             .Include(p => p.Theaters);
             }
 
             if (ShowTime != null)
@@ -96,6 +101,10 @@ namespace CapstoneProject.Controllers
 
             return Ok(prices);
         }
+
+
+
+
 
         // API endpoint to edit the Price
         [HttpPut("edit/{id}")]
