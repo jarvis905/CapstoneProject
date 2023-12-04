@@ -1,0 +1,16 @@
+﻿@model List<CapstoneProject.Models.Price>
+<!-- _TicketListPartial.cshtml -->
+<div>
+    <h3>Ticket Information</h3>
+    <ul>
+        @foreach (var price in Model)
+        {
+            <li>
+                <p>Movie: @price.Movies.Title</p>
+                <p>Showtime: @price.ShowTime.ToString("yyyy-MM-dd HH:mm:ss")</p>
+                <p>Ticket Price: $@price.TicketPrice</p>
+                <!-- Add more ticket details as needed -->
+            </li>
+        }
+    </ul>
+</div>

@@ -1,10 +1,20 @@
 @model IEnumerable<CapstoneProject.Models.Theaters>
+@using System.Text.Json
+
 
 <!doctype html>
 <html lang="en">
 <head>
     <title>@ViewData["Title"] = "Theatres";</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+
+    <!-- Bootstrap JS and Popper.js -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
     <style>
         /* Custom css for star rating */
         .checked {
@@ -19,7 +29,7 @@
         <div class="row">
             <div class="col-lg-6 col-md-8 mx-auto">
                 <h1 class="fw-light">Theaters</h1>
-                <p class="lead text-body-secondary">A list of theaters and search results for a specific location/theaters are displayed in this page.</p>
+                <p class="lead text-body-secondary">Find theaters and tickets you want.</p>
             </div>
         </div>
     </section>
@@ -88,7 +98,7 @@
     <!-- Threatres Section using bootstrap -->
     <div class="container mt-3">
         <ul class="list-group">
-            <li class="list-group-item">
+            @* <li class="list-group-item">
                 <div class="jumbotron">
                     <div class="row">
                         <div class="col-sm-4">
@@ -116,14 +126,30 @@
                                 <div class="col-sm-4">
                                     <span>Theater@contact.ca</span>
                                 </div>
-                                <div class="col-sm-4 text-end">
-                                    <button type="button" class="btn btn-primary">Movies</button>
+                                <div class="col-sm-4 text-end">       
+                                    <button type="button" class="btn btn-primary toggle-movie-details" data-theater-id="@theater.Id" data-theater-name="@theater.Name">Movies</button>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </li>
+                <!-- Movie Ticket Details Container -->
+                <div id="movieDetails1" style="display: none;">
+                    <p>Movie: Wish</p>
+                    <p>Showtime: 6:00 PM</p>
+                    <p>Ticket Price: $12.99</p>
+                    <!-- Add more movie details here -->
+                </div>
+                <!-- JavaScript for toggling movie details -->
+                <script>
+                    $(document).ready(function () {
+                        $('.toggle-movie-details').on('click', function () {
+                            var theaterId = $(this).data('theater-id');
+                            $('#movieDetails' + theaterId).toggle();
+                        });
+                    });
+                </script>
+            </li> *@
             @foreach (var theater in Model.Take(20))
             {
                 <li class="list-group-item">
@@ -155,15 +181,110 @@
                                         @theater.ContactInformation
                                     </div>
                                     <div class="col-sm-4 text-end">
-                                        <button type="button" class="btn btn-primary">Movies</button>
+                                        <button type="button" class="btn btn-primary toggle-movie-details" data-theater-id="@theater.Id" data-theater-name="@theater.Name">Movies</button>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </li>                
+                    <!-- Movie Details Container -->
+                    <div id="movieDetails@theater.Id" style="display: none;" data-theater-id="@theater.Id">
+                        <h3>@theater.Name</h3>
+                        <p>@theater.Address, @theater.Location</p>
+                        <!-- Add more theater information as needed -->
+                        <!-- Load ticket information using AJAX -->
+                        <div class="ticket-info-container"></div>
+                    </div>
+                </li>
             }
         </ul>
+
+
+        <!-- JavaScript for toggling movie details and fetching ticket information -->
+        <script>
+            $(document).ready(function () {
+                $('.toggle-movie-details').on('click', function () {
+                    console.log('Movies button clicked!');
+                    var theaterId = $(this).data('theater-id');
+                    console.log('Theater ID:', theaterId);
+
+                    var movieDetailsId = 'movieDetails' + theaterId;
+                    console.log('Movie Details ID:', movieDetailsId);
+
+                    // Fetch ticket information using AJAX
+                    var theaterName = $(this).data('theater-name');
+                    console.log('Theater Name:', theaterName);
+
+                    $.ajax({
+                        url: '@Url.Action("FilterPrices", "Price")' + '?TheaterName=' + encodeURIComponent(theaterName),
+                        type: 'GET',
+                        beforeSend: function () {
+                            console.log('AJAX Request Sent');
+                        },
+                        success: function (result) {
+                            console.log('AJAX Success:', result);
+
+                            // Move variable declarations inside success callback
+                            console.log('movieDetails Theater ID 1:', theaterId);
+                            
+                            var movieDetails = $('#movieDetails' + theaterId);
+                            console.log('Movie Details Container Length:', movieDetails.length);//for debugging
+
+                            console.log('Movie Details HTML:', movieDetails.html());//for debugging:Log the movieDetails container's HTML content.
+                            console.log('Movie Details Container:', movieDetails);//for debugging
+
+                            // Fetch ticket information using AJAX
+                            var ticketInfoContainer = movieDetails.find('.ticket-info-container');
+                            console.log('Ticket Info Container:', ticketInfoContainer);//for debugging
+
+                            // Clear existing content
+                            ticketInfoContainer.empty();
+
+                            if (result.length > 0) {
+                                result.forEach(function (item) {
+                                    console.log('Movie Title:', item.movies.title);
+                                    console.log('Show Time:', item.showTime);
+                                    console.log('Ticket Price:', item.ticketPrice.toFixed(2));
+
+                                    // Build HTML content for each movie
+                                    var htmlContent = '<div class="movie-info">';
+                                    htmlContent += '<h3>' + item.movies.title + '</h3>';
+                                    htmlContent += '<p>Show Time: ' + item.showTime + '</p>';
+                                    htmlContent += '<p>Ticket Price: $' + item.ticketPrice.toFixed(2) + '</p>';
+                                    htmlContent += '</div>';
+
+                                    // Log the HTML content
+                                    console.log('HTML Content:', htmlContent);//for debugging
+
+                                    // Append the HTML content to the container
+                                    ticketInfoContainer.append(htmlContent);
+
+                                    // Log the updated ticketInfoContainer
+                                    console.log('Ticket Info Container:', ticketInfoContainer);//for debugging
+                                });
+                            } else {
+                                console.log('No results found.');
+                            }
+
+                            // Toggle the visibility after updating content
+                            movieDetails.toggle(result.length > 0); // Show if there are results, hide otherwise
+                            console.log('Movie Details Container:', movieDetails);
+                        },
+                        error: function (xhr, status, error) {
+                            console.log('AJAX Error:', error);
+                            alert('Error loading ticket information.');
+                        },
+                        complete: function () {
+                            console.log('AJAX Request Completed');
+                        }
+                    });
+                });
+            });
+
+        </script>
+
     </div>
 
+
 </body>
+</html>
