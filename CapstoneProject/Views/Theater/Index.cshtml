@@ -188,7 +188,8 @@
                         </div>
                     </div>
                     <!-- Movie Details Container -->
-                    <div id="movieDetails@theater.Id" style="display: none;" data-theater-id="@theater.Id">
+                    <!--dynamic id issue: id="movieDetails@theater.Id" -->
+                    <div id="movieDetails_@theater.Id" style="display: none;" data-theater-id="@theater.Id">
                         <h3>@theater.Name</h3>
                         <p>@theater.Address, @theater.Location</p>
                         <!-- Add more theater information as needed -->
@@ -200,91 +201,92 @@
         </ul>
 
 
-        <!-- JavaScript for toggling movie details and fetching ticket information -->
-        <script>
-            $(document).ready(function () {
-                $('.toggle-movie-details').on('click', function () {
-                    console.log('Movies button clicked!');
-                    var theaterId = $(this).data('theater-id');
-                    console.log('Theater ID:', theaterId);
-
-                    var movieDetailsId = 'movieDetails' + theaterId;
-                    console.log('Movie Details ID:', movieDetailsId);
-
-                    // Fetch ticket information using AJAX
-                    var theaterName = $(this).data('theater-name');
-                    console.log('Theater Name:', theaterName);
-
-                    $.ajax({
-                        url: '@Url.Action("FilterPrices", "Price")' + '?TheaterName=' + encodeURIComponent(theaterName),
-                        type: 'GET',
-                        beforeSend: function () {
-                            console.log('AJAX Request Sent');
-                        },
-                        success: function (result) {
-                            console.log('AJAX Success:', result);
-
-                            // Move variable declarations inside success callback
-                            console.log('movieDetails Theater ID 1:', theaterId);
-                            
-                            var movieDetails = $('#movieDetails' + theaterId);
-                            console.log('Movie Details Container Length:', movieDetails.length);//for debugging
-
-                            console.log('Movie Details HTML:', movieDetails.html());//for debugging:Log the movieDetails container's HTML content.
-                            console.log('Movie Details Container:', movieDetails);//for debugging
-
-                            // Fetch ticket information using AJAX
-                            var ticketInfoContainer = movieDetails.find('.ticket-info-container');
-                            console.log('Ticket Info Container:', ticketInfoContainer);//for debugging
-
-                            // Clear existing content
-                            ticketInfoContainer.empty();
-
-                            if (result.length > 0) {
-                                result.forEach(function (item) {
-                                    console.log('Movie Title:', item.movies.title);
-                                    console.log('Show Time:', item.showTime);
-                                    console.log('Ticket Price:', item.ticketPrice.toFixed(2));
-
-                                    // Build HTML content for each movie
-                                    var htmlContent = '<div class="movie-info">';
-                                    htmlContent += '<h3>' + item.movies.title + '</h3>';
-                                    htmlContent += '<p>Show Time: ' + item.showTime + '</p>';
-                                    htmlContent += '<p>Ticket Price: $' + item.ticketPrice.toFixed(2) + '</p>';
-                                    htmlContent += '</div>';
-
-                                    // Log the HTML content
-                                    console.log('HTML Content:', htmlContent);//for debugging
-
-                                    // Append the HTML content to the container
-                                    ticketInfoContainer.append(htmlContent);
-
-                                    // Log the updated ticketInfoContainer
-                                    console.log('Ticket Info Container:', ticketInfoContainer);//for debugging
-                                });
-                            } else {
-                                console.log('No results found.');
-                            }
-
-                            // Toggle the visibility after updating content
-                            movieDetails.toggle(result.length > 0); // Show if there are results, hide otherwise
-                            console.log('Movie Details Container:', movieDetails);
-                        },
-                        error: function (xhr, status, error) {
-                            console.log('AJAX Error:', error);
-                            alert('Error loading ticket information.');
-                        },
-                        complete: function () {
-                            console.log('AJAX Request Completed');
-                        }
-                    });
-                });
-            });
-
-        </script>
-
     </div>
 
+    <!-- JavaScript for toggling movie details and fetching ticket information -->
+    <script>
+        $(document).ready(function () {
+            $('.toggle-movie-details').on('click', function () {
+                console.log('Movies button clicked!');
+                var theaterId = $(this).data('theater-id');
+                console.log('Theater ID:', theaterId);
+
+                var movieDetailsId = '#movieDetails_' + theaterId.toString(); // Use '#' to indicate an ID selector
+                console.log('Movie Details ID:', movieDetailsId);
+
+                // Fetch ticket information using AJAX
+                var theaterName = $(this).data('theater-name');
+                console.log('Theater Name:', theaterName);
+
+                $.ajax({
+                    url: '@Url.Action("FilterPrices", "Price")' + '?TheaterName=' + encodeURIComponent(theaterName),
+                    type: 'GET',
+                    beforeSend: function () {
+                        console.log('AJAX Request Sent');
+                    },
+                    success:function (result) {
+                        console.log('AJAX Success:', result);
+
+                        // Move variable declarations inside success callback
+                        console.log('movieDetails Theater ID 1:', theaterId);
+
+                        var movieDetails = $(movieDetailsId);
+                        console.log('Movie Details Container Length:', movieDetails.length); // for debugging
+
+                        console.log('Movie Details HTML:', movieDetails.html()); // for debugging: Log the movieDetails container's HTML content.
+                        console.log('Movie Details Container:', movieDetails); // for debugging
+
+                        // Fetch ticket information using AJAX
+                        var ticketInfoContainer = movieDetails.find('.ticket-info-container');
+                        console.log('Ticket Info Container:', ticketInfoContainer); // for debugging
+
+                        // Clear existing content
+                        ticketInfoContainer.empty();
+
+                        if (result.length > 0) {
+                            result.forEach(function (item) {
+                                console.log('Movie Title:', item.movies.title);
+                                console.log('Show Time:', item.showTime);
+                                console.log('Ticket Price:', item.ticketPrice.toFixed(2));
+
+                                // Build HTML content for each movie
+                                var htmlContent = '<div class="movie-info">';
+                                htmlContent += '<h3>' + item.movies.title + '</h3>';
+                                htmlContent += '<p>Show Time: ' + item.showTime + '</p>';
+                                htmlContent += '<p>Ticket Price: $' + item.ticketPrice.toFixed(2) + '</p>';
+                                htmlContent += '</div>';
+
+                                // Log the HTML content
+                                console.log('HTML Content:', htmlContent); // for debugging
+
+                                // Append the HTML content to the container
+                                ticketInfoContainer.append(htmlContent);
+
+                                // Log the updated ticketInfoContainer
+                                console.log('Ticket Info Container:', ticketInfoContainer); // for debugging
+
+                                //$(movieDetailsId).toggle();
+                            });
+                        } else {
+                            console.log('No results found.');
+                        }
+
+                        // Toggle the visibility after updating content
+                        movieDetails.toggle(result.length > 0); // Show if there are results, hide otherwise
+                        console.log('Movie Details Container:', movieDetails);
+                    },
+                    error:function (xhr, status, error) {
+                        console.log('AJAX Error:', error);
+                        alert('Error loading ticket information.');
+                    },
+                    complete: function () {
+                        console.log('AJAX Request Completed');
+                    }
+                    });
+            });
+        });
+
+    </script>
 
 </body>
 </html>
