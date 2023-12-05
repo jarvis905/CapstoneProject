@@ -1,0 +1,150 @@
+@model CapstoneProject.Models.MovieViewModel
+
+<!doctype html>
+<html lang="en">
+<head>
+    <title>@ViewData["Title"] = "Movie";</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <style>
+        .reviews {
+            padding-bottom: 50px;
+        }
+        .movie-poster {
+            width: 100%;
+            height: 100%;
+        }
+        .rating-color {
+            color: #e6cd28;
+        }
+        .user-details {
+            text-align: center;
+        }
+        .modal {
+            color: black;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+    <section>
+        <div class="container">
+            <div class="mt-4 p-5 bg-dark rounded">
+                <div class="row">
+                    <div class="col-sm-4">
+                        <img src="@Model.MovieData.PosterImageUrl" alt="Movie poster" style="width: -webkit-fill-available;">
+                    </div>
+                    <div class="col-sm-8" style="color: white;">
+                        <h2>@Model.MovieData.Title</h2><br/>
+                        <p>@Model.MovieData.Description</p>
+                        <h4>More details:</h4>
+                        <p>Release Date: @Model.MovieData.ReleaseDate</p>
+                        <p>Writer: @Model.MovieData.Writer</p>
+                        <p>Director: @Model.MovieData.Director</p>
+                        <p>Actors: @Model.MovieData.Actores</p>
+                        <p>Language: @Model.MovieData.Language</p>
+                        <p>RunTime: @Model.MovieData.RunTime</p>
+                        <p>Box Office: @Model.MovieData.BoxOffice</p>
+                        @{
+                            double averageRating = Model.ListReviews.Any() ? Model.ListReviews.Average(r => r.UserRate) : 0;
+                        }
+                        <p>Average movie rating: @averageRating.ToString("0.00")</p>
+
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <!-- Button to Open the Modal -->
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#review">
+                                Write a review
+                            </button>
+                            
+                            <!-- The Modal -->
+                            <div class="modal" id="review">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                
+                                        <!-- Modal Header -->
+                                        <div class="modal-header">
+                                        <h4 class="modal-title">Write a review</h4>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                        </div>
+
+                                        @using (Html.BeginForm("PostReview", "Reviews", FormMethod.Post, new {id = "reviewForm", @class = "needs-validation", nonvalidate = "true"}))
+                                        {
+                                            @Html.AntiForgeryToken()
+                                                <input type="hidden" name="movieId" value="@Model.MovieData.Id" />
+                                                <input type="hidden" name="userId" value="@User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value" />
+                                            <!-- Modal body -->
+                                            <div class="modal-body">
+                                                <!-- Rating with drag option -->
+                                                
+                                                    <label for="userRate">Rating (between 0 to 10):</label>
+                                                    <input type="range" id="userRate" name="userRate" min="0" max="10">
+                                                    <div class="mb-3 form-group ">
+                                                        <label for="comment">Enter review:</label>
+                                                        <textarea class="form-control" name="comment" id="comment" rows="3" placeholder="Enter review ..."></textarea>
+                                                    </div>
+                                            </div>
+                                    
+                                            <!-- Modal footer -->
+                                            <div class="modal-footer">
+                                                <button type="submit" class="btn btn-success" data-bs-dismiss="modal" id="submitButton">Submit</button>
+                                                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+                                            </div>
+                                        }                                
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <a href="/Identity/Account/Login" class="btn btn-link">
+                                <!-- Button to Open the Modal -->
+                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#review">
+                                    Write a review
+                                </button>
+                            </a>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="container reviews">
+                <ul class="list-group">
+                    
+                    <!-- Reviews in database -->
+                    @foreach (var review in Model.ListReviews.OrderByDescending(r => r.Timestamp))
+                    {
+                        var userDetails = await Model.UserManager.FindByIdAsync(review.UserId);
+                        <li class="list-group-item">
+                            <div class="row">
+                                <div class="col-sm-2 user-details">
+                                    <p>@userDetails.UserName</p>
+                                    <!-- Keeping space for a profile photo of user. To be added later. -->
+                                    <img src="cinqueterre.jpg" class="rounded-circle" width="90px">
+                                </div>
+                                <div class="col-sm-10">
+                                    <p>Review: @review.Comment</p>
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <span>Rating: @review.UserRate</span>
+                                            @for (int i = 0; i < @review.UserRate; i++)
+                                            {<i class="fa fa-star rating-color"></i>}
+                                            @for (int i = 0; i < 10 - @review.UserRate; i++)
+                                            {<i class="fa fa-star"></i>}
+
+                                        </div>
+                                        <div class="col-sm-6" style="text-align: right;">
+                                            <p>@review.Timestamp</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </section>
+</body>
+</html>

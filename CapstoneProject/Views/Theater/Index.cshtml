@@ -98,7 +98,8 @@
     <!-- Threatres Section using bootstrap -->
     <div class="container mt-3">
         <ul class="list-group">
-            @* <li class="list-group-item">
+            @* <!-- Theater List static sample -->
+                <li class="list-group-item">
                 <div class="jumbotron">
                     <div class="row">
                         <div class="col-sm-4">
@@ -246,6 +247,7 @@
 
                                 // Create a movie container
                                 var movieContainer = $('<div class="movie-container"></div>');
+                              
 
                                 // Left side: Movie title and poster
                                 var leftContent = $('<div class="left-content"></div>');
@@ -258,6 +260,7 @@
                                 rightContent.append('<button type="button" class="btn btn-primary showtime-button">' +
                                     new Date(item.showTime).toLocaleString("en-US", { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' }) +
                                     '<br><span class="small-font">Price: $' + item.ticketPrice.toFixed(2) + '<br>Available Seats: ' + item.availableSeats + '</span></button>');
+
                                 movieContainer.append(rightContent);
 
                                 // Append the movie container to the ticket info container

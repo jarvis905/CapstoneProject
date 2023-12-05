@@ -86,6 +86,19 @@ public class HomeController : Controller
             FavMovies = favMovies
         };
 
+        if (User.Identity.IsAuthenticated)
+        {
+            // Retrieve recommendations for the logged-in user
+            var recommendations = await GetRecommendationsForUser();
+
+            if (recommendations != null)
+            {
+                // Assign recommendations to the view model
+                model.RecommendationModels = recommendations;
+            }
+            // If recommendations are null, just leave the model.RecommendationModels as an empty list.
+        }
+
         // Pass the view model to the view
         return View(model);
     }
@@ -130,6 +143,54 @@ public class HomeController : Controller
 
             // Handle errors or return an empty list if something went wrong.
             return new List<TheMoviedbModel>();
+        }
+    }
+
+
+
+    private async Task<List<RecommendationModel>> GetRecommendationsForUser()
+    {
+        try
+        {
+            // Get the user ID of the logged-in user
+            var userId = _userManager.GetUserId(User);
+
+            var client = new HttpClient();
+            //Get the recommendation from a local Python API
+            var apiUrl = $"http://127.0.0.1:5000/api/get_collaborative_recommendations?user_id={userId}";
+
+            using (var response = await client.GetAsync(apiUrl))
+            {
+                if (response.IsSuccessStatusCode)
+                {
+                    var json = await response.Content.ReadAsStringAsync();
+                    var recommendationApiResponse = Newtonsoft.Json.JsonConvert.DeserializeObject<RecommendationApiResponse>(json);
+
+                    // Extract the MovieId values from the Results
+                    var recommendations = recommendationApiResponse?.Results?.Select(r => new RecommendationModel { MovieId = r.MovieId }).ToList();
+
+                    //Print the result for testing 
+                    Console.WriteLine(json);
+
+                    return recommendations ?? new List<RecommendationModel>();
+                }
+                else
+                {
+                    // Log the error status code
+                    Console.WriteLine($"API request failed with status code: {response.StatusCode}");
+
+                    // Return null in case of an error
+                    return null;
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            // Log the exception
+            Console.WriteLine($"Error getting recommendations: {ex}");
+
+            // Return null in case of an error
+            return null;
         }
     }
 

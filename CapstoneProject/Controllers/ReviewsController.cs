@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using CapstoneProject.Data;
 using CapstoneProject.Models;
 using Microsoft.AspNetCore.Identity;
+using System.Text.Json;
 
 
 namespace CapstoneProject.Controllers
@@ -59,13 +60,15 @@ namespace CapstoneProject.Controllers
         [Produces("application/json")]
         public async Task<ActionResult<Reviews>> GetReviews(int movieid)
         {
-            var reviews = from r in _context.Reviews select r;
+            // var reviews = from r in _context.Reviews select r;
+            var reviews = (IQueryable<Reviews>)GetAll();
             reviews = reviews.Where(r => r.MovieId == movieid);
             if (reviews == null)
             {
                 return NotFound();
             }
-            return Ok(await reviews.ToListAsync());
+            // ViewBag.reviews = reviews;
+            return Ok(reviews);
         }
 
         // API endpoint to get reviews of a specific User by ID
@@ -80,42 +83,6 @@ namespace CapstoneProject.Controllers
                 return NotFound();
             }
             return Ok(await reviews.ToListAsync());
-        }
-
-
-        // API endpoint to edit a review
-        [HttpPut("edit/{id}")]
-        [Produces("application/json")]
-        public async Task<IActionResult> EditReview(int id, [FromBody] Reviews editedReview)
-        {
-            var review = await _context.Reviews.FindAsync(id);
-
-            if (review == null)
-            {
-                return NotFound();
-            }
-
-            review.Comment = editedReview.Comment;
-
-            review.UserRate = review.UserRate;
-
-            await _context.SaveChangesAsync();
-
-            return Ok(review);
-        }
-
-        // API endpoint to delete a review
-        [HttpDelete("delete/{id}")]
-        public async Task<IActionResult> DeleteReview(int id)
-        {
-            var review = await _context.Reviews.FindAsync(id);
-            if (review == null)
-            {
-                return NotFound();
-            }
-            _context.Reviews.Remove(review);
-            await _context.SaveChangesAsync();
-            return NoContent();
         }
 
         // API endpoint to post a review
@@ -157,6 +124,41 @@ namespace CapstoneProject.Controllers
             }
 
             return Unauthorized();
+        }
+
+        // API endpoint to edit a review
+        [HttpPut("edit/{id}")]
+        [Produces("application/json")]
+        public async Task<IActionResult> EditReview(int id, [FromBody] Reviews editedReview)
+        {
+            var review = await _context.Reviews.FindAsync(id);
+
+            if (review == null)
+            {
+                return NotFound();
+            }
+
+            review.Comment = editedReview.Comment;
+
+            review.UserRate = review.UserRate;
+
+            await _context.SaveChangesAsync();
+
+            return Ok(review);
+        }
+
+        // API endpoint to delete a review
+        [HttpDelete("delete/{id}")]
+        public async Task<IActionResult> DeleteReview(int id)
+        {
+            var review = await _context.Reviews.FindAsync(id);
+            if (review == null)
+            {
+                return NotFound();
+            }
+            _context.Reviews.Remove(review);
+            await _context.SaveChangesAsync();
+            return NoContent();
         }
 
     }

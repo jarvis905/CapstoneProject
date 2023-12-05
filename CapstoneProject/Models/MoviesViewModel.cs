@@ -25,6 +25,9 @@ namespace CapstoneProject.Models
         public UserManager<IdentityUser> UserManager { get; set; }
 
         public List<MovieTrailer> MovieTrailers { get; set; }
+
+        //Get list of recommendation movies from API
+        public List<RecommendationModel> RecommendationModels { get; set; }
     }
 }
 

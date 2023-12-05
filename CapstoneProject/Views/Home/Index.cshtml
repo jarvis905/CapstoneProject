@@ -120,7 +120,9 @@
                                     </div>
                                     <div class="col-md-9">
                                         <div class="card-body">
-                                            <h4 class="card-title">@movie.Title</h4>
+                                            <a asp-controller="Movie" asp-action="SingleMovie" asp-route-id="@movie.Id">
+                                                <h4 class="card-title">@movie.Title</h4>
+                                            </a>
                                             <p class="card-text">@movie.Description</p>
                                         </div>
                                     </div>
@@ -165,7 +167,6 @@
                                             </a>
                                         </div>
                                     }
-
                                 </div>
                             </div>
                         }
@@ -268,20 +269,65 @@
 
     <section>
         @if (User.Identity.IsAuthenticated)
-            {<h2 class="scroll-box font-weight-light">My Favorite List</h2>}
+        {<h2 class="scroll-box font-weight-light">My Favorite List</h2>}
+        <div class="wrapper">
+            <div class="movie-list">
+                @if (User.Identity.IsAuthenticated)
+                {
+                    var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+                    @foreach (var favoriteMovie in Model.FavMovies.Where(f => f.UserId == userId))
+                    {
+                        var movie = Model.LocalMovies.FirstOrDefault(m => m.Id == favoriteMovie.MovieId);
+
+                        if (movie != null)
+                        {
+                            <div class="movie-card cardn">
+                                <a asp-controller="MovieDetails" asp-action="Index" asp-route-movieId="@movie.Id">
+                                    <img src="@movie.PosterImageUrl" alt="Movie poster" class="movie-poster">
+                                    <div class="movie-info">
+                                        <h1 class="movie-title">@movie.Title</h1>
+                                    </div>
+
+                                    <div class="details">
+                                        <h2>Release Date: @movie.ReleaseDate</h2>
+                                        <div class="tags">
+                                            <span class="tag">@movie.Language</span>
+                                        </div>
+                                        <p class="desc">
+                                            @if (!string.IsNullOrEmpty(movie.Description))
+                                            {
+                                                @Html.Raw(movie.Description.Length > 240 ? $"{movie.Description.Substring(0, 240)}..." : movie.Description)
+                                            }
+                                        </p>
+                                    </div>
+                                </a>
+                            </div>
+                        }
+                    }
+                }
+            </div>
+        </div>
+    </section>
+
+    @*Get recommendation movies from an external API*@
+    <section>
+        @if (User.Identity.IsAuthenticated)
+        {
+            <h2 class="scroll-box font-weight-light">Recommendations for you</h2>
             <div class="wrapper">
                 <div class="movie-list">
-                    @if (User.Identity.IsAuthenticated)
+                    @if (Model.RecommendationModels != null && Model.RecommendationModels.Any())
                     {
-                        var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-                        @foreach (var favoriteMovie in Model.FavMovies.Where(f => f.UserId == userId))
+                        foreach (var recommendation in Model.RecommendationModels)
                         {
-                            var movie = Model.LocalMovies.FirstOrDefault(m => m.Id == favoriteMovie.MovieId);
+                            // Retrieve the movie corresponding to the recommendation
+                            var movie = Model.LocalMovies.FirstOrDefault(m => m.Id == recommendation.MovieId);
 
+                            // Check if the movie is found
                             if (movie != null)
                             {
                                 <div class="movie-card cardn">
-                                    <a asp-controller="MovieDetails" asp-action="Index" asp-route-movieId="@movie.Id">
+                                    <a asp-controller="MovieDetails" asp-action="Index" asp-route-movieId="@movie.MovieID">
                                         <img src="@movie.PosterImageUrl" alt="Movie poster" class="movie-poster">
                                         <div class="movie-info">
                                             <h1 class="movie-title">@movie.Title</h1>
@@ -304,9 +350,15 @@
                             }
                         }
                     }
+                    else
+                    {
+                        <p>No recommendations available at the moment.</p>
+                    }
                 </div>
             </div>
-        </section>
+        }
+      
+    </section>
 
     <section>
         <div class="container">
