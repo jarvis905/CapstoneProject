@@ -224,17 +224,12 @@
                     beforeSend: function () {
                         console.log('AJAX Request Sent');
                     },
-                    success:function (result) {
+                    success: function (result) {
                         console.log('AJAX Success:', result);
 
                         // Move variable declarations inside success callback
-                        console.log('movieDetails Theater ID 1:', theaterId);
-
                         var movieDetails = $(movieDetailsId);
                         console.log('Movie Details Container Length:', movieDetails.length); // for debugging
-
-                        console.log('Movie Details HTML:', movieDetails.html()); // for debugging: Log the movieDetails container's HTML content.
-                        console.log('Movie Details Container:', movieDetails); // for debugging
 
                         // Fetch ticket information using AJAX
                         var ticketInfoContainer = movieDetails.find('.ticket-info-container');
@@ -249,23 +244,24 @@
                                 console.log('Show Time:', item.showTime);
                                 console.log('Ticket Price:', item.ticketPrice.toFixed(2));
 
-                                // Build HTML content for each movie
-                                var htmlContent = '<div class="movie-info">';
-                                htmlContent += '<h3>' + item.movies.title + '</h3>';
-                                htmlContent += '<p>Show Time: ' + item.showTime + '</p>';
-                                htmlContent += '<p>Ticket Price: $' + item.ticketPrice.toFixed(2) + '</p>';
-                                htmlContent += '</div>';
+                                // Create a movie container
+                                var movieContainer = $('<div class="movie-container"></div>');
 
-                                // Log the HTML content
-                                console.log('HTML Content:', htmlContent); // for debugging
+                                // Left side: Movie title and poster
+                                var leftContent = $('<div class="left-content"></div>');
+                                leftContent.append('<h3>' + item.movies.title + '</h3>');
+                                leftContent.append('<img src="' + item.movies.posterImageUrl + '" alt="' + item.movies.title + '" style="width: 142px; height: 214px;">');
+                                movieContainer.append(leftContent);
 
-                                // Append the HTML content to the container
-                                ticketInfoContainer.append(htmlContent);
+                                // Right side: Show time button and ticket price
+                                var rightContent = $('<div class="right-content"></div>');
+                                rightContent.append('<button type="button" class="btn btn-primary showtime-button">' +
+                                    new Date(item.showTime).toLocaleString("en-US", { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' }) +
+                                    '<br><span class="small-font">Price: $' + item.ticketPrice.toFixed(2) + '<br>Available Seats: ' + item.availableSeats + '</span></button>');
+                                movieContainer.append(rightContent);
 
-                                // Log the updated ticketInfoContainer
-                                console.log('Ticket Info Container:', ticketInfoContainer); // for debugging
-
-                                //$(movieDetailsId).toggle();
+                                // Append the movie container to the ticket info container
+                                ticketInfoContainer.append(movieContainer);
                             });
                         } else {
                             console.log('No results found.');
