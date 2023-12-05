@@ -247,6 +247,7 @@
 
                                 // Create a movie container
                                 var movieContainer = $('<div class="movie-container"></div>');
+                              
 
                                 // Left side: Movie title and poster
                                 var leftContent = $('<div class="left-content"></div>');
@@ -258,9 +259,8 @@
                                 var rightContent = $('<div class="right-content"></div>');
                                 rightContent.append('<button type="button" class="btn btn-primary showtime-button">' +
                                     new Date(item.showTime).toLocaleString("en-US", { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' }) +
-                                    '<br><span class="small-font">Price: $' + item.ticketPrice.toFixed(2) + '<br> ( Available Seats: ' + item.seatsAvailable + ' ) </span></button>');
+                                    '<br><span class="small-font">Price: $' + item.ticketPrice.toFixed(2) + '<br>Available Seats: ' + item.availableSeats + '</span></button>');
 
-                                //rightContent.append('<p>Ticket Price: $' + item.ticketPrice.toFixed(2) + '</p>');
                                 movieContainer.append(rightContent);
 
                                 // Append the movie container to the ticket info container
