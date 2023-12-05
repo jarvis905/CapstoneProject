@@ -50,6 +50,8 @@
     <section class="search">
         <div class="container">
             <div class="card border-0 shadow-lg search-card">
+                @using (Html.BeginForm("FilterMovies", "Movie", FormMethod.Get, new {id = "searchForm"}))
+                {
                 <div class="search-body d-flex justify-content-center align-items-center">
                     @*<h1 class="display-9 font-weight-bold mb-2">Find Your Movie</h1>*@
                     <div class="row">
@@ -66,15 +68,16 @@
                         </div>
                         <div class="col-md-6 mb-3 mb-md-0">
                             <div class="form-outline form-white">
-                                <input type="text" id="sec1" class="form-control form-control-lg fancy-input" placeholder="Search for movies...">
+                                <input type="text" name="searchString" id="searchString" class="form-control form-control-lg fancy-input" placeholder="Search for movies...">
                                 <i class="fas fa-search search-icon"></i>
                             </div>
                         </div>
                         <div class="col-md-2">
-                            <a asp-area="" asp-controller="Movie" asp-action="Index" class="btn btn-primary btn-lg btn-block fancy-button">Search</a>
+                            <button type="submit" class="btn btn-primary btn-lg btn-block fancy-button">Search</buttona>
                         </div>
                     </div>
                 </div>
+                }
             </div>
         </div>
     </section>
