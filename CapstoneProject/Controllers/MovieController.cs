@@ -31,7 +31,11 @@ namespace CapstoneProject.Controllers
         // GET: /<controller>/
         public async Task<IActionResult> Index()
         {
-            return View();
+            var model = new MoviesViewModel
+            {
+                LocalMovies = await _context.Movies.ToListAsync(),
+            };
+            return View(model);
         }
 
         [HttpGet("movie/{id}")]
@@ -83,24 +87,21 @@ namespace CapstoneProject.Controllers
         // API endpoint to filter the Movies
         [HttpGet("filter")]
         [Produces("application/json")]
-        public async Task<IActionResult> FilterMovies(string? Title, string? Genre, DateTime? ReleaseDate)
+        public async Task<IActionResult> FilterMovies(string? searchString, string? Genre, DateTime? ReleaseDate)
         {
             var query = _context.Movies.AsQueryable();
 
-            if (!string.IsNullOrWhiteSpace(Title))
+            if (!string.IsNullOrWhiteSpace(searchString))
             {
-                query = query.Where(m => EF.Functions.Like(m.Title, $"%{Title}%"));
+                query = query.Where(m => m.Title.ToLower().Contains(searchString.ToLower()));
             }
 
-
-            if (ReleaseDate != null)
+            var model = new MoviesViewModel
             {
-                query = query.Where(m => m.ReleaseDate == ReleaseDate);
-            }
+                LocalMovies = await query.ToListAsync(),
+            };
 
-            var movies = await query.ToListAsync();
-
-            return Ok(movies);
+            return View("Index", model);
         }
 
         // API endpoint to edit the Movie

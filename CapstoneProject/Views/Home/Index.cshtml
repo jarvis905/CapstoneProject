@@ -50,31 +50,33 @@
     <section class="search">
         <div class="container">
             <div class="card border-0 shadow-lg search-card">
-                <div class="search-body d-flex justify-content-center align-items-center">
-                    @*<h1 class="display-9 font-weight-bold mb-2">Find Your Movie</h1>*@
-                    <div class="row">
-                        <div class="col-md-4 mb-3 mb-md-0">
-                            <div class="form-group">
-                                <select class="form-control form-control-lg fancy-select" id="categorySelect">
-                                    <option value="all">All Categories</option>
-                                    <option value="action">Action</option>
-                                    <option value="comedy">Comedy</option>
-                                    <option value="drama">Drama</option>
-                                    <option value="fantasy">Fantasy</option>
-                                </select>
+                @using (Html.BeginForm("FilterMovies", "Movie", FormMethod.Get, new {id = "searchForm"}))
+                {
+                    <div class="search-body d-flex justify-content-center align-items-center">
+                        <div class="row">
+                            <div class="col-md-4 mb-3 mb-md-0">
+                                <div class="form-group">
+                                    <select class="form-control form-control-lg fancy-select" id="categorySelect">
+                                        <option value="all">All Categories</option>
+                                        <option value="action">Action</option>
+                                        <option value="comedy">Comedy</option>
+                                        <option value="drama">Drama</option>
+                                        <option value="fantasy">Fantasy</option>
+                                    </select>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-6 mb-3 mb-md-0">
-                            <div class="form-outline form-white">
-                                <input type="text" id="sec1" class="form-control form-control-lg fancy-input" placeholder="Search for movies...">
-                                <i class="fas fa-search search-icon"></i>
+                            <div class="col-md-6 mb-3 mb-md-0">
+                                <div class="form-outline form-white">
+                                    <input type="text" name="searchString" id="searchString" class="form-control form-control-lg fancy-input" placeholder="Search for movies...">
+                                    <i class="fas fa-search search-icon"></i>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-2">
-                            <a asp-area="" asp-controller="Movie" asp-action="Index" class="btn btn-primary btn-lg btn-block fancy-button">Search</a>
+                            <div class="col-md-2">
+                                <button type="submit" class="btn btn-primary btn-lg btn-block fancy-button">Search</button>
+                            </div>
                         </div>
                     </div>
-                </div>
+                }
             </div>
         </div>
     </section>
