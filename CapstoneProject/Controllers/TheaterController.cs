@@ -127,6 +127,16 @@ namespace CapstoneProject.Controllers
                 theater.ContactInformation = editedTheater.ContactInformation;
             }
 
+            if (!string.IsNullOrWhiteSpace(editedTheater.City))
+            {
+                theater.City = editedTheater.City;
+            }
+
+            if (!string.IsNullOrWhiteSpace(editedTheater.CinemaLine))
+            {
+                theater.CinemaLine = editedTheater.CinemaLine;
+            }
+
             // Similar updates for other fields
 
             await _context.SaveChangesAsync();

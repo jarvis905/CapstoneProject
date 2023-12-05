@@ -26,10 +26,16 @@ namespace CapstoneProject.Models
         [DataType(DataType.Date)]
         public DateTime OpeningDate { get; set; }
 
+        [Display(Name = "City")]
+        public string City { get; set; }
+
         [Display(Name = "Address")]
         public string Address { get; set; }
 
         [Display(Name = "Contact Information")]
         public string ContactInformation { get; set; }
+
+        [Display(Name = "Cinema Line")]
+        public string CinemaLine { get; set; }
     }
 }
