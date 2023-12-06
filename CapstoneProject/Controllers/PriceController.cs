@@ -9,11 +9,9 @@ using CapstoneProject.Data;
 
 namespace CapstoneProject.Controllers
 {
-
-    [Route("api/prices")]
+    [Route("api/prices")]  // Updated route to match the new model name
     [ApiController]
-
-    public class PriceController : Controller
+    public class PriceController : Controller  // Renamed the controller to match the new model name
     {
         private readonly ApplicationDbContext _context;
 
@@ -28,115 +26,110 @@ namespace CapstoneProject.Controllers
             return View();
         }
 
-        // API endpoint to get all the Price, including related movie and theater data
+        // API endpoint to get all MoviePrices, including related movie and theater data
         [HttpGet("getall")]
         [Produces("application/json")]
-        public async Task<ActionResult<IEnumerable<Price>>> GetPrice()
+        public async Task<ActionResult<IEnumerable<MoviePrice>>> GetMoviePrices()  // Updated method name and return type
         {
-            var prices = await _context.Price
-                .Include(p => p.Movies)
-                .Include(p => p.Theaters)
+            var moviePrices = await _context.MoviePrices  // Updated DbSet name
+                .Include(mp => mp.Movies)
+                .Include(mp => mp.Theaters)
                 .ToListAsync();
-            return Ok(prices);
+            return Ok(moviePrices);
         }
 
-        //API endpoint to get a single price by ID
+        // API endpoint to get a single MoviePrice by ID
         [HttpGet("{id}")]
         [Produces("application/json")]
-        public async Task<ActionResult<Price>> GetPrice(int id)
+        public async Task<ActionResult<MoviePrice>> GetMoviePrice(int id)  // Updated method name and return type
         {
-            var price = await _context.Price
-                .Include(p => p.Movies)
-                .Include(p => p.Theaters)
-                .FirstOrDefaultAsync(p => p.Id == id);
-            if (price == null)
+            var moviePrice = await _context.MoviePrices  // Updated DbSet name
+                .Include(mp => mp.Movies)
+                .Include(mp => mp.Theaters)
+                .FirstOrDefaultAsync(mp => mp.Id == id);
+            if (moviePrice == null)
             {
                 return NotFound();
             }
-            return Ok(price);
+            return Ok(moviePrice);
         }
 
-        // API endpoint to post the Price
+        // API endpoint to create a MoviePrice
         [HttpPost("create")]
         [Produces("application/json")]
-        public async Task<ActionResult<Price>> Create([FromBody] Price price)
+        public async Task<ActionResult<MoviePrice>> Create([FromBody] MoviePrice moviePrice)  // Updated parameter type
         {
             if (ModelState.IsValid)
             {
-                _context.Price.Add(price);
+                _context.MoviePrices.Add(moviePrice);  // Updated DbSet name
                 await _context.SaveChangesAsync();
-                return CreatedAtAction("GetPrice", new { id = price.Id }, price);
+                return CreatedAtAction("GetMoviePrice", new { id = moviePrice.Id }, moviePrice);  // Updated method name
             }
             return BadRequest(ModelState);
         }
 
-        // API endpoint to filter the Price
+        // API endpoint to filter MoviePrices
         [HttpGet("filter")]
         [Produces("application/json")]
-        public async Task<IActionResult> FilterPrices(string? MovieTitle, string? TheaterName, DateTime? ShowTime)
+        public async Task<IActionResult> FilterMoviePrices(string? MovieTitle, string? TheaterName, DateTime? ShowTime)
         {
-            var query = _context.Price
-                .Include(p => p.Movies)
-                .Include(p => p.Theaters)
+            var query = _context.MoviePrices  // Updated DbSet name
+                .Include(mp => mp.Movies)
+                .Include(mp => mp.Theaters)
                 .AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(MovieTitle))
             {
-                query = query.Where(p => p.Movies.Title.Contains(MovieTitle, StringComparison.OrdinalIgnoreCase))
-                             .Include(p => p.Movies);
+                query = query.Where(mp => mp.Movies.Title.Contains(MovieTitle, StringComparison.OrdinalIgnoreCase))
+                             .Include(mp => mp.Movies);
             }
 
             if (!string.IsNullOrWhiteSpace(TheaterName))
             {
-                query = query.Where(p => p.Theaters.Name.ToLower().Contains(TheaterName.ToLower()))
-                             .Include(p => p.Theaters);
+                query = query.Where(mp => mp.Theaters.Name.ToLower().Contains(TheaterName.ToLower()))
+                             .Include(mp => mp.Theaters);
             }
 
             if (ShowTime != null)
             {
-                query = query.Where(p => p.ShowTime.Date == ShowTime.Value.Date);
+                query = query.Where(mp => mp.ShowTime.Date == ShowTime.Value.Date);
             }
 
-            var prices = await query.ToListAsync();
+            var moviePrices = await query.ToListAsync();
 
-            return Ok(prices);
+            return Ok(moviePrices);
         }
 
-
-
-
-
-        // API endpoint to edit the Price
+        // API endpoint to edit a MoviePrice
         [HttpPut("edit/{id}")]
         [Produces("application/json")]
-        public async Task<IActionResult> EditPrice(int id, [FromBody] Price editedPrice)
+        public async Task<IActionResult> EditMoviePrice(int id, [FromBody] MoviePrice editedMoviePrice)  // Updated method name and parameter type
         {
-            var price = await _context.Price.FindAsync(id);
+            var moviePrice = await _context.MoviePrices.FindAsync(id);  // Updated DbSet name
 
-            if (price == null)
+            if (moviePrice == null)
             {
                 return NotFound();
             }
 
-            price.TicketPrice = editedPrice.TicketPrice;
-
-            price.ShowTime = editedPrice.ShowTime;
+            moviePrice.TicketPrice = editedMoviePrice.TicketPrice;
+            moviePrice.ShowTime = editedMoviePrice.ShowTime;
 
             await _context.SaveChangesAsync();
 
-            return Ok(price);
+            return Ok(moviePrice);
         }
 
-        // API endpoint to edit the price
+        // API endpoint to delete a MoviePrice
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeletePrice(int id)
+        public async Task<IActionResult> DeleteMoviePrice(int id)  // Updated method name
         {
-            var price = await _context.Price.FindAsync(id);
-            if (price == null)
+            var moviePrice = await _context.MoviePrices.FindAsync(id);  // Updated DbSet name
+            if (moviePrice == null)
             {
                 return NotFound();
             }
-            _context.Price.Remove(price);
+            _context.MoviePrices.Remove(moviePrice);  // Updated DbSet name
             await _context.SaveChangesAsync();
             return NoContent();
         }

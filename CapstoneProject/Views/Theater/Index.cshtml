@@ -220,7 +220,7 @@
                 console.log('Theater Name:', theaterName);
 
                 $.ajax({
-                    url: '@Url.Action("FilterPrices", "Price")' + '?TheaterName=' + encodeURIComponent(theaterName),
+                    url: '@Url.Action("FilterMoviePrices", "Price")' + '?TheaterName=' + encodeURIComponent(theaterName),
                     type: 'GET',
                     beforeSend: function () {
                         console.log('AJAX Request Sent');
@@ -244,7 +244,7 @@
                                 console.log('Movie Title:', item.movies.title);
                                 console.log('Show Time:', item.showTime);
                                 console.log('Ticket Price:', item.ticketPrice.toFixed(2));
-
+                                console.log('Available Seats:', item.seatsAvailable);
                                 // Create a movie container
                                 var movieContainer = $('<div class="movie-container"></div>');
                               
@@ -259,7 +259,7 @@
                                 var rightContent = $('<div class="right-content"></div>');
                                 rightContent.append('<button type="button" class="btn btn-primary showtime-button">' +
                                     new Date(item.showTime).toLocaleString("en-US", { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' }) +
-                                    '<br><span class="small-font">Price: $' + item.ticketPrice.toFixed(2) + '<br>Available Seats: ' + item.availableSeats + '</span></button>');
+                                    '<br><span class="small-font">Price: $' + item.ticketPrice.toFixed(2) + '<br>Available Seats: ' + item.seatsAvailable + '</span></button>');
 
                                 movieContainer.append(rightContent);
 
