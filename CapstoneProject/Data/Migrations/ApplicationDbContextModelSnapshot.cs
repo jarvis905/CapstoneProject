@@ -68,6 +68,38 @@ namespace CapstoneProject.Migrations
                     b.ToTable("Genres");
                 });
 
+            modelBuilder.Entity("CapstoneProject.Models.MoviePrice", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("MovieId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SeatsAvailable")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("ShowTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("TheatreId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("TicketPrice")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MovieId");
+
+                    b.HasIndex("TheatreId");
+
+                    b.ToTable("MoviePrices");
+                });
+
             modelBuilder.Entity("CapstoneProject.Models.MovieRate", b =>
                 {
                     b.Property<int>("Id")
@@ -501,6 +533,25 @@ namespace CapstoneProject.Migrations
                         .IsRequired();
 
                     b.Navigation("Movie");
+                });
+
+            modelBuilder.Entity("CapstoneProject.Models.MoviePrice", b =>
+                {
+                    b.HasOne("CapstoneProject.Models.Movies", "Movies")
+                        .WithMany()
+                        .HasForeignKey("MovieId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CapstoneProject.Models.Theaters", "Theaters")
+                        .WithMany()
+                        .HasForeignKey("TheatreId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Movies");
+
+                    b.Navigation("Theaters");
                 });
 
             modelBuilder.Entity("CapstoneProject.Models.MovieRate", b =>

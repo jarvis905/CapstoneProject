@@ -28,6 +28,8 @@ namespace CapstoneProject.Models
 
         //Get list of recommendation movies from API
         public List<RecommendationModel> RecommendationModels { get; set; }
+
+        public List<MoviePrice> Prices { get; set; }
     }
 }
 

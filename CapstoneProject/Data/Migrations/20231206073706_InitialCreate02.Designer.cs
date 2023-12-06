@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CapstoneProject.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231109023052_InitialCreate03")]
-    partial class InitialCreate03
+    [Migration("20231206073706_InitialCreate02")]
+    partial class InitialCreate02
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -70,6 +70,38 @@ namespace CapstoneProject.Migrations
                     b.ToTable("Genres");
                 });
 
+            modelBuilder.Entity("CapstoneProject.Models.MoviePrice", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("MovieId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SeatsAvailable")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("ShowTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("TheatreId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("TicketPrice")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MovieId");
+
+                    b.HasIndex("TheatreId");
+
+                    b.ToTable("MoviePrices");
+                });
+
             modelBuilder.Entity("CapstoneProject.Models.MovieRate", b =>
                 {
                     b.Property<int>("Id")
@@ -107,14 +139,12 @@ namespace CapstoneProject.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Actores")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<long>("BoxOffice")
+                    b.Property<long?>("BoxOffice")
                         .HasColumnType("bigint");
 
                     b.Property<string>("Country")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Description")
@@ -123,15 +153,16 @@ namespace CapstoneProject.Migrations
                         .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("Director")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Language")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("MovieID")
+                        .HasColumnType("int");
+
                     b.Property<string>("MovieRating")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PosterImageUrl")
@@ -142,15 +173,16 @@ namespace CapstoneProject.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("RunTime")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("TrailerKey")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Writer")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -206,15 +238,15 @@ namespace CapstoneProject.Migrations
                     b.Property<int>("MovieId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Rating")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("Timestamp")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<float>("UserRate")
+                        .HasColumnType("real");
 
                     b.HasKey("Id");
 
@@ -239,6 +271,14 @@ namespace CapstoneProject.Migrations
 
                     b.Property<int>("Capacity")
                         .HasColumnType("int");
+
+                    b.Property<string>("CinemaLine")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ContactInformation")
                         .IsRequired()
@@ -495,6 +535,25 @@ namespace CapstoneProject.Migrations
                         .IsRequired();
 
                     b.Navigation("Movie");
+                });
+
+            modelBuilder.Entity("CapstoneProject.Models.MoviePrice", b =>
+                {
+                    b.HasOne("CapstoneProject.Models.Movies", "Movies")
+                        .WithMany()
+                        .HasForeignKey("MovieId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CapstoneProject.Models.Theaters", "Theaters")
+                        .WithMany()
+                        .HasForeignKey("TheatreId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Movies");
+
+                    b.Navigation("Theaters");
                 });
 
             modelBuilder.Entity("CapstoneProject.Models.MovieRate", b =>

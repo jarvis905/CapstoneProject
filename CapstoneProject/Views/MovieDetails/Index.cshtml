@@ -29,6 +29,23 @@
         <p>@Model.MovieDetails.Description</p>
     </div>
 
+
+    <div>
+        <h3>Theaters and Prices</h3>
+
+        @foreach (var theaterPrice in Model.Prices)
+        {
+           
+            <div class="theater-price">
+
+                <p><strong>Show Time:</strong> @theaterPrice.ShowTime.ToString("yyyy-MM-dd HH:mm:ss")</p>
+                <p><strong>Ticket Price:</strong> @theaterPrice.TicketPrice.ToString("C")</p>
+                <p><strong>Seats Available:</strong> @theaterPrice.SeatsAvailable</p>
+            </div>
+        }
+    </div>
+
+
     <div>
         <div>
             <h3>User Reviews</h3>
@@ -42,7 +59,22 @@
                         <div>
                             <svg width="32px" height="32px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <circle opacity="0.5" cx="12" cy="9" r="3" stroke="#1C274C" stroke-width="1.5"></circle> <circle cx="12" cy="12" r="10" stroke="#1C274C" stroke-width="1.5"></circle> <path opacity="0.5" d="M17.9691 20C17.81 17.1085 16.9247 15 11.9999 15C7.07521 15 6.18991 17.1085 6.03076 20" stroke="#1C274C" stroke-width="1.5" stroke-linecap="round"></path> </g></svg>
                             <span class="user-name">@user.UserName</span>
-                            <svg width="24px" height="24px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><defs><style>.a,.b{fill:none;stroke:#606060;stroke-linecap:round;stroke-width:1.5px;}.a{stroke-linejoin:round;}.b{stroke-linejoin:bevel;}</style></defs><path class="a" d="M2.5,21.02394l.78984-2.87249c1.30656-4.75167,4.7927-7.16185,8.24449-7.16185"></path><circle class="b" cx="11.5" cy="5.99202" r="5"></circle><circle class="a" cx="16.5" cy="18.00798" r="5"></circle><path class="a" d="M16.08284,20l1.85858-1.85858a.2.2,0,0,0,0-.28284L16.08284,16"></path></g></svg>
+                            <svg width="24px" height="24px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><defs><style>
+                                                                                                                                                                                                                                                                                                        .a, .b {
+                                                                                                                                                                                                                                                                                                            fill: none;
+                                                                                                                                                                                                                                                                                                            stroke: #606060;
+                                                                                                                                                                                                                                                                                                            stroke-linecap: round;
+                                                                                                                                                                                                                                                                                                            stroke-width: 1.5px;
+                                                                                                                                                                                                                                                                                                        }
+
+                                                                                                                                                                                                                                                                                                        .a {
+                                                                                                                                                                                                                                                                                                            stroke-linejoin: round;
+                                                                                                                                                                                                                                                                                                        }
+
+                                                                                                                                                                                                                                                                                                        .b {
+                                                                                                                                                                                                                                                                                                            stroke-linejoin: bevel;
+                                                                                                                                                                                                                                                                                                        }
+                            </style></defs><path class="a" d="M2.5,21.02394l.78984-2.87249c1.30656-4.75167,4.7927-7.16185,8.24449-7.16185"></path><circle class="b" cx="11.5" cy="5.99202" r="5"></circle><circle class="a" cx="16.5" cy="18.00798" r="5"></circle><path class="a" d="M16.08284,20l1.85858-1.85858a.2.2,0,0,0,0-.28284L16.08284,16"></path></g></svg>
                             <span class="user-rate">
                                 Rate: @review.UserRate
                             </span>

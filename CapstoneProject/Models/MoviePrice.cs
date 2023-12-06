@@ -1,10 +1,11 @@
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Xml.Linq;
 
 namespace CapstoneProject.Models
 {
-	public class Price
+	public class MoviePrice
 	{
         public int Id { get; set; }
 
@@ -28,13 +29,10 @@ namespace CapstoneProject.Models
         [DataType(DataType.DateTime)]
         [Display(Name = "Show Time")]
         public DateTime ShowTime { get; set; }
-        
+
 
         public int SeatsAvailable { get; set; }
 
-        
-
-        
     }
 }
 

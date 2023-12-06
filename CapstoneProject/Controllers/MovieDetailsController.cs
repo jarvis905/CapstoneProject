@@ -52,13 +52,30 @@ namespace CapstoneProject.Controllers
             // Fetch movie trailers from the API
             var trailers = await GetMovieTrailersAsync(movieId);
 
+
+            var moviePrices = await _context.MoviePrices
+           .Include(p => p.Theaters)
+           .Where(p => p.MovieId == movie.Id)
+           .ToListAsync();
+
+
+            // Create a list of TheaterPriceViewModel
+            var theaterPrices = moviePrices.Select(moviePrices => new MoviePrice
+            {
+                TheatreId = moviePrices.TheatreId,
+                TicketPrice = moviePrices.TicketPrice,
+                ShowTime = moviePrices.ShowTime,
+                SeatsAvailable = moviePrices.SeatsAvailable
+            }).ToList();
+
             // Create a view model for the movie details and reviews
             var movieViewModel = new MoviesViewModel
             {
                 MovieDetails = movie,
                 MovieReviews = movieReviews,
                 MovieTrailers = trailers, 
-                UserManager = _userManager
+                UserManager = _userManager,
+                Prices = theaterPrices
             };
 
             return View(movieViewModel);  
