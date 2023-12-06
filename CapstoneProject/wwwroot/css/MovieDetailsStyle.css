@@ -129,3 +129,6 @@
     .star-rating input[type="radio"]:checked ~ label {
         color: #ffc107; /* Set the color of the selected star */
     }
+
+
+

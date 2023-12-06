@@ -10,6 +10,66 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="~/css/MovieDetailsStyle.css">
+
+    <style>
+        
+        .card-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            padding: 20px; /* Adjust as needed */
+        }
+
+        .theater-card {
+            width: 400px; /* Set the card width as needed */
+            margin-bottom: 20px; /* Add space between cards */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border: 1px solid #ddd; /* Add border style */
+            border-radius: 8px; /* Add border radius for rounded corners */
+            background-color: #f0f8ff; /* Light blue background color */
+        }
+
+        .card-body {
+            padding: 15px;
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        .card-text {
+            margin-bottom: 5px;
+        }
+
+        
+
+        .badge-container {
+            position: relative;
+            width: 100%;
+            height: 0;
+            padding-top: 0%;
+        }
+
+        .price-badge {
+            position: absolute;
+            top: 3px;
+            right: 3px;
+            width: 50px; /* Adjust the size of the badge as needed */
+            height: 50px; /* Adjust the size of the badge as needed */
+            border-radius: 50%;
+            background-color: #007bff; /* Set the background color of the badge */
+            color: #fff; /* Set the text color */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 14px; /* Adjust the font size */
+            line-height: 1; /* Center the text vertically */
+        }
+
+       
+
+    </style>
 </head>
 
 <div>
@@ -32,17 +92,26 @@
 
     <div>
         <h3>Theaters and Prices</h3>
-
-        @foreach (var theaterPrice in Model.Prices)
-        {
-           
-            <div class="theater-price">
-
-                <p><strong>Show Time:</strong> @theaterPrice.ShowTime.ToString("yyyy-MM-dd HH:mm:ss")</p>
-                <p><strong>Ticket Price:</strong> @theaterPrice.TicketPrice.ToString("C")</p>
-                <p><strong>Seats Available:</strong> @theaterPrice.SeatsAvailable</p>
-            </div>
-        }
+        <div class="card-container">
+            @foreach (var theaterPrice in Model.Prices)
+            {
+                <div class="theater-card">
+                    <div class="badge-container">
+                        <div class="price-badge">
+                            <p>$@theaterPrice.TicketPrice.ToString()</p>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Theater Name:</strong> @theaterPrice.Theaters.Name</p>
+                        <p><strong>Theater City:</strong> @theaterPrice.Theaters.City</p>
+                        <p><strong>Theater Location:</strong> @theaterPrice.Theaters.Location</p>
+                        <p><strong>Theater Address:</strong> @theaterPrice.Theaters.Address</p>
+                        <p><strong>Show Time:</strong> @theaterPrice.ShowTime.ToString("yyyy-MM-dd HH:mm:ss")</p>
+                        <p><strong>Seats Available:</strong> @theaterPrice.SeatsAvailable</p>
+                    </div>
+                </div>
+            }
+        </div>
     </div>
 
 

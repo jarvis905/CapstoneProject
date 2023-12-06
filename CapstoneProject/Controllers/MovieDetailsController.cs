@@ -65,7 +65,8 @@ namespace CapstoneProject.Controllers
                 TheatreId = moviePrices.TheatreId,
                 TicketPrice = moviePrices.TicketPrice,
                 ShowTime = moviePrices.ShowTime,
-                SeatsAvailable = moviePrices.SeatsAvailable
+                SeatsAvailable = moviePrices.SeatsAvailable,
+                Theaters = moviePrices.Theaters  //To get data from Theaters table for Name,Address,..
             }).ToList();
 
             // Create a view model for the movie details and reviews
