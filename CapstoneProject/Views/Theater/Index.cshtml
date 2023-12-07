@@ -1,12 +1,14 @@
-@model IEnumerable<CapstoneProject.Models.Theaters>
+@model IEnumerable<CapstoneProject.Models.TheaterWithPricesViewModel>
 @using System.Text.Json
 
-
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <title>@ViewData["Title"] = "Theatres";</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- Bootstrap Datepicker CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
 
@@ -15,16 +17,57 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 
+    <!-- Bootstrap Datepicker JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+
+
     <style>
         /* Custom css for star rating */
         .checked {
             color: orange;
         }
+
+        /* Adjusted poster style */
+        .movie-poster {
+            width: 165px;
+            height: 220px;
+        }
+        /* Adjust the theater logo as needed */
+        .cineplex-logo {
+            width: 280px; 
+            height: 150px;
+        }
+
+        .landmark-logo {
+            width: 280px; 
+            height: 150px;
+        }
+
+        .price-badge {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: absolute;
+            top: 0px;
+            right: 3px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #007bff;
+        }
+        /* .price-badge {
+            position: absolute;
+            top: 0px;
+            right: 3px;
+            width: 50px; /* Adjust the size of the badge as needed */
+            height: 50px; /* Adjust the size of the badge as needed */
+            border-radius: 50%;
+            background-color: #007bff; /* Set the background color of the badge */ */
     </style>
 </head>
-
 <body>
 
+    <!-- Header Section -->
     <section class="text-center container">
         <div class="row">
             <div class="col-lg-6 col-md-8 mx-auto">
@@ -36,142 +79,94 @@
 
     <!-- Search Bar and Filters Section -->
     <div class="container mt-3 text-center">
-        <div class="row justify-content-center align-items-center">
-            <div class="col-md-4">
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control" placeholder="Search for theaters...">
-                    <button class="btn btn-primary" type="button">Search</button>
-                </div>
-            </div>
-            <div class="col-md-8">
-                <div class="filter-row d-flex mb-3">
-                    <!-- Filters: City and Country -->
-                    <div class="filter me-3">
-                        <div class="dropdown">
-                            <button class="btn btn-secondary dropdown-toggle" type="button" id="cityDropdownButton" data-bs-toggle="dropdown" aria-expanded="false">
-                                City
-                            </button>
-                            <ul class="dropdown-menu" aria-labelledby="cityDropdownButton">
-                                <li>
-                                    <a class="dropdown-item" href="#">All Cities</a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" href="#">Burnaby</a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" href="#">Vancouver</a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" href="#">New Westminster</a>
-                                </li>
-                                <!-- Add more city options here -->
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="filter me-3">
-                        <div class="dropdown">
-                            <button class="btn btn-secondary dropdown-toggle" type="button" id="countryDropdownButton" data-bs-toggle="dropdown" aria-expanded="false">
-                                Country
-                            </button>
-                            <ul class="dropdown-menu" aria-labelledby="countryDropdownButton">
-                                <li>
-                                    <a class="dropdown-item" href="#">All Countries</a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" href="#">Canada</a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" href="#">USA</a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" href="#">Mexico</a>
-                                </li>
-                                <!-- Add more country options here -->
-                            </ul>
-                        </div>
+        <form asp-action="Index" asp-controller="Theater" method="get" class="row justify-content-center align-items-end">
+            <!-- Date Filter for Theater -->
+            <div class="col-md-4 mb-3 mb-md-0">
+                <div class="input-group">
+                    <!-- Add a unique identifier for the date input -->
+                    <input type="text" class="form-control datepicker" name="selectedDate" value="@DateTime.Now.ToString("yyyy-MM-dd")" placeholder="Select date...">
+                    <div class="input-group-append">
+                        <!-- Add a unique identifier for the apply button -->
+                        <button class="btn btn-primary apply-filter" type="submit">Date</button>
                     </div>
                 </div>
             </div>
-        </div>
+
+            <!-- Search input and button -->
+            <div class="col-md-4 mb-3 mb-md-0">
+                <div class="input-group">
+                    <input type="text" class="form-control" name="search" placeholder="Search for theaters...">
+                    <button class="btn btn-primary" type="submit">Search</button>
+                </div>
+            </div>
+
+            <!-- City dropdown -->
+            <div class="col-md-4 mb-3 mb-md-0">
+                <div class="dropdown">
+                    <button class="btn btn-primary dropdown-toggle" type="button" id="cityDropdownButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        City
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="cityDropdownButton">
+                        <li>
+                            <button type="submit" class="dropdown-item" name="city" value="All Cities">All Cities</button>
+                        </li>
+                        <li>
+                            <button type="submit" class="dropdown-item" name="city" value="Vancouver">Vancouver</button>
+                        </li>
+                        <li>
+                            <button type="submit" class="dropdown-item" name="city" value="Burnaby">Burnaby</button>
+                        </li>
+                        <li>
+                            <button type="submit" class="dropdown-item" name="city" value="Richmond">Richmond</button>
+                        </li>
+                        <li>
+                            <button type="submit" class="dropdown-item" name="city" value="Surrey">Surrey</button>
+                        </li>
+                        <li>
+                            <button type="submit" class="dropdown-item" name="city" value="New Westminster">New Westminster</button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+        </form>
     </div>
 
-    <!-- Threatres Section using bootstrap -->
+    <!-- Theatres List Section -->
     <div class="container mt-3">
         <ul class="list-group">
-            @* <!-- Theater List static sample -->
-                <li class="list-group-item">
-                <div class="jumbotron">
-                    <div class="row">
-                        <div class="col-sm-4">
-                            <img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Cineplex_Entertainment_logo_%282009-2015%29.svg" class="img-rounded" alt="CineplexLogo">
-                        </div>
-                        <div class="col-sm-8">
-                            <h4>Cineplex Vancouver</h4>
-                            <div class="address">
-                                <p>
-                                    <span>5345 Homer Street</span><br>
-                                    <span>Vancouver, BC</span>
-                                </p>
-                            </div>
-                            <div class="row">
-                                <div class="col-sm-4">
-                                    <span>
-                                        Rating
-                                    </span>
-                                    <span class="fa fa-star checked"></span>
-                                    <span class="fa fa-star checked"></span>
-                                    <span class="fa fa-star checked"></span>
-                                    <span class="fa fa-star"></span>
-                                    <span class="fa fa-star"></span>
-                                </div>
-                                <div class="col-sm-4">
-                                    <span>Theater@contact.ca</span>
-                                </div>
-                                <div class="col-sm-4 text-end">       
-                                    <button type="button" class="btn btn-primary toggle-movie-details" data-theater-id="@theater.Id" data-theater-name="@theater.Name">Movies</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Movie Ticket Details Container -->
-                <div id="movieDetails1" style="display: none;">
-                    <p>Movie: Wish</p>
-                    <p>Showtime: 6:00 PM</p>
-                    <p>Ticket Price: $12.99</p>
-                    <!-- Add more movie details here -->
-                </div>
-                <!-- JavaScript for toggling movie details -->
-                <script>
-                    $(document).ready(function () {
-                        $('.toggle-movie-details').on('click', function () {
-                            var theaterId = $(this).data('theater-id');
-                            $('#movieDetails' + theaterId).toggle();
-                        });
-                    });
-                </script>
-            </li> *@
-            @foreach (var theater in Model.Take(20))
+            @foreach (var theaterWithPrices in Model.Take(20))
             {
                 <li class="list-group-item">
                     <div class="jumbotron">
                         <div class="row">
                             <div class="col-sm-4">
-                                <img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Cineplex_Entertainment_logo_%282009-2015%29.svg" class="img-rounded" alt="CineplexLogo">
+                                @if (theaterWithPrices.Theater.CinemaLine == "Cineplex")
+                                {
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Cineplex_Entertainment_logo_%282009-2015%29.svg" class="img-rounded cineplex-logo" alt="CineplexLogo">
+                                }
+                                else if (theaterWithPrices.Theater.CinemaLine == "Landmark")
+                                {
+                                    <img src="https://upload.wikimedia.org/wikipedia/en/9/95/Landmark_Cinemas_logo.png" class="img-rounded landmark-logo" alt="LandmarkLogo">
+                                }
+                                else
+                                {
+                                    <!-- Default logo if cinema line is not recognized -->
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Cineplex_Entertainment_logo_%282009-2015%29.svg" class="img-rounded cineplex-logo" alt="DefaultLogo">
+                                }
                             </div>
+                            
                             <div class="col-sm-8">
-                                <h4>@theater.Name</h4>
+                                <h4>@theaterWithPrices.Theater.Name</h4>
                                 <div class="address">
                                     <p>
-                                        <span>@theater.Address</span><br>
-                                        <span>@theater.Location</span>
+                                        <span>@theaterWithPrices.Theater.Address</span><br>
+                                        <span>@theaterWithPrices.Theater.Location</span>
                                     </p>
                                 </div>
                                 <div class="row">
                                     <div class="col-sm-4">
-                                        <span>
-                                            Rating
-                                        </span>
+                                        <span>Rating</span>
                                         <span class="fa fa-star checked"></span>
                                         <span class="fa fa-star checked"></span>
                                         <span class="fa fa-star checked"></span>
@@ -179,113 +174,103 @@
                                         <span class="fa fa-star"></span>
                                     </div>
                                     <div class="col-sm-4">
-                                        @theater.ContactInformation
+                                        @theaterWithPrices.Theater.ContactInformation
                                     </div>
                                     <div class="col-sm-4 text-end">
-                                        <button type="button" class="btn btn-primary toggle-movie-details" data-theater-id="@theater.Id" data-theater-name="@theater.Name">Movies</button>
+                                        <button type="button" class="btn btn-primary toggle-movie-details" data-theater-id="@theaterWithPrices.Theater.Id" data-theater-name="@theaterWithPrices.Theater.Name">Movies</button>
                                     </div>
                                 </div>
                             </div>
+
+                            <!-- Movie Details Container -->
+                            <div id="movieDetails_@theaterWithPrices.Theater.Id" style="display: none;" data-theater-id="@theaterWithPrices.Theater.Id">
+                                <h3>@theaterWithPrices.Theater.Name</h3>
+                                <p>@theaterWithPrices.Theater.Address, @theaterWithPrices.Theater.Location</p>
+
+
+                                <!-- Movie Prices -->
+                                <div class="ticket-info-container border p-3 rounded">
+                                    @foreach (var groupByMovie in theaterWithPrices.Prices.GroupBy(p => p.Movies.Title))
+                                    {
+                                        <div class="row mb-3 border-bottom">
+                                            <div class="col-md-12">
+                                                <h4>@groupByMovie.Key</h4>
+                                            </div>
+                                        </div>
+
+                                        @foreach (var price in groupByMovie)
+                                        {
+                                            <div class="row mb-3">
+                                                <!-- Left side: Movie title and poster -->
+                                                <div class="col-md-6">
+                                                    <div class="movie-container">
+                                                        <div class="left-content">
+                                                            <a href="@Url.Action("Index", "MovieDetails", new { movieId = price.Movies.MovieID })">
+                                                                <img src="@price.Movies.PosterImageUrl" alt="@price.Movies.Title" class="movie-poster">
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <!-- Right side: Price badges -->
+                                                <div class="col-md-6">
+                                                    <div class="col-md-6">
+                                                        <label class="list-group-item rounded-3 py-2" style="background-color: #f0f0f0; padding: 10px;">
+                                                            <div class="price-badge">
+                                                                <p style="text-align: center; color: whitesmoke;">@price.TicketPrice</p>
+                                                            </div>
+                                                            <div class="h-100">
+                                                                <p style="font-weight: bold;">@price.ShowTime.ToString("MM-dd")</p>
+                                                                <button type="button" class="btn btn-primary showtime-button mt-2">@price.ShowTime.ToString("h:mm tt")</button>
+                                                                <span class="d-block small opacity-50">Seats Available: @price.SeatsAvailable</span>
+                                                            </div>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+                                    }
+                                </div>
+                            </div>
+
+                            
                         </div>
-                    </div>
-                    <!-- Movie Details Container -->
-                    <!--dynamic id issue: id="movieDetails@theater.Id" -->
-                    <div id="movieDetails_@theater.Id" style="display: none;" data-theater-id="@theater.Id">
-                        <h3>@theater.Name</h3>
-                        <p>@theater.Address, @theater.Location</p>
-                        <!-- Add more theater information as needed -->
-                        <!-- Load ticket information using AJAX -->
-                        <div class="ticket-info-container"></div>
                     </div>
                 </li>
             }
         </ul>
-
-
     </div>
 
-    <!-- JavaScript for toggling movie details and fetching ticket information -->
+
+
+    <!-- JavaScript for toggling movie details and applying date filter -->
     <script>
-        $(document).ready(function () {
-            $('.toggle-movie-details').on('click', function () {
-                console.log('Movies button clicked!');
-                var theaterId = $(this).data('theater-id');
-                console.log('Theater ID:', theaterId);
+        // Use jQuery.noConflict() to avoid conflicts
+        jQuery.noConflict();
 
-                var movieDetailsId = '#movieDetails_' + theaterId.toString(); // Use '#' to indicate an ID selector
-                console.log('Movie Details ID:', movieDetailsId);
+        // Wrap your jQuery code inside an anonymous function
+        (function ($) {
+            $(document).ready(function () {
+                // Initialize datepicker
+                $('.datepicker').datepicker({
+                    format: 'yyyy-mm-dd',
+                    autoclose: true
+                });
 
-                // Fetch ticket information using AJAX
-                var theaterName = $(this).data('theater-name');
-                console.log('Theater Name:', theaterName);
+                // Toggle movie details
+                $('.toggle-movie-details').on('click', function () {
+                    var theaterId = $(this).data('theater-id');
+                    var movieDetails = $('#movieDetails_' + theaterId);
+                    movieDetails.toggle();
+                });
 
-                $.ajax({
-                    url: '@Url.Action("FilterMoviePrices", "Price")' + '?TheaterName=' + encodeURIComponent(theaterName),
-                    type: 'GET',
-                    beforeSend: function () {
-                        console.log('AJAX Request Sent');
-                    },
-                    success: function (result) {
-                        console.log('AJAX Success:', result);
+                
 
-                        // Move variable declarations inside success callback
-                        var movieDetails = $(movieDetailsId);
-                        console.log('Movie Details Container Length:', movieDetails.length); // for debugging
 
-                        // Fetch ticket information using AJAX
-                        var ticketInfoContainer = movieDetails.find('.ticket-info-container');
-                        console.log('Ticket Info Container:', ticketInfoContainer); // for debugging
-
-                        // Clear existing content
-                        ticketInfoContainer.empty();
-
-                        if (result.length > 0) {
-                            result.forEach(function (item) {
-                                console.log('Movie Title:', item.movies.title);
-                                console.log('Show Time:', item.showTime);
-                                console.log('Ticket Price:', item.ticketPrice.toFixed(2));
-                                console.log('Available Seats:', item.seatsAvailable);
-                                // Create a movie container
-                                var movieContainer = $('<div class="movie-container"></div>');
-                              
-
-                                // Left side: Movie title and poster
-                                var leftContent = $('<div class="left-content"></div>');
-                                leftContent.append('<h3>' + item.movies.title + '</h3>');
-                                leftContent.append('<img src="' + item.movies.posterImageUrl + '" alt="' + item.movies.title + '" style="width: 142px; height: 214px;">');
-                                movieContainer.append(leftContent);
-
-                                // Right side: Show time button and ticket price
-                                var rightContent = $('<div class="right-content"></div>');
-                                rightContent.append('<button type="button" class="btn btn-primary showtime-button">' +
-                                    new Date(item.showTime).toLocaleString("en-US", { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' }) +
-                                    '<br><span class="small-font">Price: $' + item.ticketPrice.toFixed(2) + '<br>Available Seats: ' + item.seatsAvailable + '</span></button>');
-
-                                movieContainer.append(rightContent);
-
-                                // Append the movie container to the ticket info container
-                                ticketInfoContainer.append(movieContainer);
-                            });
-                        } else {
-                            console.log('No results found.');
-                        }
-
-                        // Toggle the visibility after updating content
-                        movieDetails.toggle(result.length > 0); // Show if there are results, hide otherwise
-                        console.log('Movie Details Container:', movieDetails);
-                    },
-                    error:function (xhr, status, error) {
-                        console.log('AJAX Error:', error);
-                        alert('Error loading ticket information.');
-                    },
-                    complete: function () {
-                        console.log('AJAX Request Completed');
-                    }
-                    });
             });
-        });
-
+        })(jQuery);
     </script>
+
+   
 
 </body>
 </html>
