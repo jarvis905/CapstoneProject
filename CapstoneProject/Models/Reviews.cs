@@ -22,7 +22,7 @@ namespace CapstoneProject.Models
         [ForeignKey("UserId")]
         public IdentityUser User { get; set; } // Using a custom ApplicationUser if needed later
 
-        [Range(1, 5, ErrorMessage = "The rating must be between 1 and 10.")]
+        [Range(1, 5, ErrorMessage = "The rating must be between 1 and 5.")]
         public float UserRate { get; set; }
 
         [MaxLength(500)] 

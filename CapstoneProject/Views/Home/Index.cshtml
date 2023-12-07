@@ -56,12 +56,14 @@
                         <div class="row">
                             <div class="col-md-4 mb-3 mb-md-0">
                                 <div class="form-group">
-                                    <select class="form-control form-control-lg fancy-select" id="categorySelect">
-                                        <option value="all">All Categories</option>
+                                    <select class="form-control form-control-lg fancy-select" form="searchForm" name="genre" id="Genre">
+                                        <option value="">All Genres</option>
                                         <option value="action">Action</option>
+                                        <option value="adventure">Adventure</option>
                                         <option value="comedy">Comedy</option>
                                         <option value="drama">Drama</option>
                                         <option value="fantasy">Fantasy</option>
+                                        <option value="romance">Romance</option>
                                     </select>
                                 </div>
                             </div>
@@ -122,7 +124,7 @@
                                     </div>
                                     <div class="col-md-9">
                                         <div class="card-body">
-                                            <a asp-controller="Movie" asp-action="SingleMovie" asp-route-id="@movie.Id">
+                                            <a asp-controller="MovieDetails" asp-action="SingleMovie" asp-route-MovieID="@movie.MovieID">
                                                 <h4 class="card-title">@movie.Title</h4>
                                             </a>
                                             <p class="card-text">@movie.Description</p>
