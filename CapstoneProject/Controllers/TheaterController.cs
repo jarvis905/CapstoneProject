@@ -22,11 +22,60 @@ namespace CapstoneProject.Controllers
         }
 
         // GET: /<controller>/
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? city = null, string? search = null, DateTime? selectedDate = null)
         {
-            var theaters = await _context.Theaters.ToListAsync();
-            return View(theaters);
+            IQueryable<Theaters> query = _context.Theaters.AsQueryable();
+
+            // Apply city filter if specified
+            if (!string.IsNullOrWhiteSpace(city) && city != "All Cities")
+            {
+                query = query.Where(t => t.City == city);
+            }
+
+            // Apply search filter if specified
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                query = query.Where(t => EF.Functions.Like(t.Name, $"%{search}%"));
+            }
+
+            var theaters = await query.ToListAsync();
+
+            // Convert the list of theaters to TheaterWithPricesViewModel
+            var theatersWithPrices = new List<TheaterWithPricesViewModel>();
+
+            foreach (var theater in theaters)
+            {
+                var moviePrices = await _context.MoviePrices
+                    .Include(p => p.Movies)
+                    .Include(p => p.Theaters)
+                    .Where(p => p.Theaters.Id == theater.Id)
+                    .ToListAsync();
+
+                // Apply date filter if specified
+                if (selectedDate.HasValue)
+                {
+                    moviePrices = moviePrices
+                        .Where(p => p.ShowTime.Date == selectedDate.Value.Date)
+                        .ToList();
+                }
+
+                // Create a view model for the theater with associated prices
+                var theaterWithPrices = new TheaterWithPricesViewModel
+                {
+                    Theater = theater,
+                    Prices = moviePrices
+                };
+
+                theatersWithPrices.Add(theaterWithPrices);
+            }
+
+            return View(theatersWithPrices);
         }
+
+
+
+
+
 
         // Endpoint to get all theaters
         [HttpGet("getall")]
@@ -54,7 +103,7 @@ namespace CapstoneProject.Controllers
         [HttpGet("filter")]
         [Produces("application/json")]
         public async Task<IActionResult> FilterTheaters(
-            string? Name, string? Location, DateTime? OpeningDate)
+            string? Name, string? Location, DateTime? OpeningDate, string? City)
         {
             var query = _context.Theaters.AsQueryable();
 
@@ -73,9 +122,14 @@ namespace CapstoneProject.Controllers
                 query = query.Where(t => t.OpeningDate == OpeningDate);
             }
 
+            if (!string.IsNullOrWhiteSpace(City) && City != "All Cities")
+            {
+                query = query.Where(t => t.City == City);
+            }
+
             var theaters = await query.ToListAsync();
 
-            return Ok(theaters);
+            return View("Index", theaters); //Ok(theaters);
         }
 
         // Endpoint to edit a theater
@@ -143,5 +197,37 @@ namespace CapstoneProject.Controllers
 
             return Ok(theater);
         }
+
+        // Endpoint to get all theaters with associated movie prices
+        [HttpGet("getallwithprices")]
+        [Produces("application/json")]
+        public async Task<ActionResult<IEnumerable<TheaterWithPricesViewModel>>> GetAllWithPrices()
+        {
+            var theaters = await _context.Theaters.ToListAsync();
+
+            // Create a list to hold the view model with prices
+            var theatersWithPrices = new List<TheaterWithPricesViewModel>();
+
+            foreach (var theater in theaters)
+            {
+                var moviePrices = await _context.MoviePrices
+                    .Include(p => p.Movies)
+                    .Include(p => p.Theaters)  // Include the Theaters navigation property
+                    .Where(p => p.Theaters.Id == theater.Id)  
+                    .ToListAsync();
+
+                // Create a view model for the theater with associated prices
+                var theaterWithPrices = new TheaterWithPricesViewModel
+                {
+                    Theater = theater,
+                    Prices = moviePrices
+                };
+
+                theatersWithPrices.Add(theaterWithPrices);
+            }
+
+            return theatersWithPrices;
+        }
+
     }
 }
