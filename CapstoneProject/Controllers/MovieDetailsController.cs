@@ -120,6 +120,30 @@ namespace CapstoneProject.Controllers
             return new List<MovieTrailer>();
         }
 
+        [HttpGet("movie/{MovieID}")]
+        public async Task<IActionResult> SingleMovie(int MovieID)
+        {
+            
+            var MovieData = await _context.Movies.FirstOrDefaultAsync(r => r.MovieID == MovieID);
+            var ReviewList = await _context.Reviews.Where(r => r.MovieId == MovieData.Id).ToListAsync();
+            var trailers = await GetMovieTrailersAsync(MovieID);
+
+            if (MovieData == null)
+            {
+                return NotFound();
+            }
+
+            var model = new MoviesViewModel
+            {
+                MovieDetails = MovieData,
+                MovieReviews = ReviewList,
+                MovieTrailers = trailers,
+                UserManager = _userManager
+            };
+
+            return View(model);
+        }
+
 
     }
 }

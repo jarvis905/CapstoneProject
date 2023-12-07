@@ -26,163 +26,64 @@
     </section>
 
     <!-- Search Bar and Filters Section -->
-    <div class="container mt-3 text-center">
-        <div class="row justify-content-center align-items-center">
-            <div class="col-md-4">
-                 @using (Html.BeginForm("FilterMovies", "Movie", FormMethod.Get, new {id = "searchForm"}))
-                {
-                    <div class="input-group mb-3">
-                        <input type="text" name="searchString" id="searchString" class="form-control" placeholder="Search for movies...">
-                        <button class="btn btn-primary" type="submit">Search</button>
-                    </div>
-                }
-
-            </div>
-            <div class="col-md-8">
-                <div class="filter-row d-flex mb-3">
-                    <!-- Horizontal Filters: Date, Theater, Genre -->
-                    <div class="filter me-3">
-                        <div class="dropdown">
-                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dateDropdownButton" data-bs-toggle="dropdown" aria-expanded="false">
-                                Date
-                            </button>
-                            <ul class="dropdown-menu" aria-labelledby="dateDropdownButton">
-                                <li>
-                                    <a class="dropdown-item" href="#">All Dates</a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" href="#">2023-10-20</a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" href="#">2022-10-21</a>
-                                </li>
-                                <!-- Add more date options here in YYYY-MM-DD format -->
-                            </ul>
+    @using (Html.BeginForm("FilterMovies", "Movie", FormMethod.Get, new {id = "searchForm"}))
+    {
+        <div class="container mt-3 text-center">
+            <div class="row justify-content-center align-items-center">
+                <div class="col-md-6">
+                        <div class="input-group mb-3">
+                            <input type="text" name="searchString" id="searchString" class="form-control" placeholder="Search for movies...">
+                            <button class="btn btn-primary" type="submit">Search</button>
                         </div>
-                    </div>
-                    <div class="filter me-3">
-                        <div class="dropdown">
-                            <button class="btn btn-secondary dropdown-toggle" type="button" id="theatreDropdownButton" data-bs-toggle="dropdown" aria-expanded="false">
-                                Theatre
-                            </button>
-                            <ul class="dropdown-menu" aria-labelledby="theatreDropdownButton">
-                                <li>
-                                    <a class="dropdown-item" href="#">All Theatres</a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" href="#">Theatre 1</a>
-                                </li>
-                                <!-- Add more theatre options here -->
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="filter me-3">
-                        <div class="dropdown">
-                            <button class="btn btn-secondary dropdown-toggle" type="button" id="genreDropdownButton" data-bs-toggle="dropdown" aria-expanded="false">
-                                Genre
-                            </button>
-                            <ul class="dropdown-menu" aria-labelledby="genreDropdownButton">
-                                <li>
-                                    <a class="dropdown-item" href="#">All Genres</a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" href="#">Action</a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" href="#">Comedy</a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" href="#">Romance</a>
-                                </li>
-                                <!-- Add more genre options here -->
-                            </ul>
-                        </div>
-                    </div>
-
                 </div>
-                <div class="filter-row d-flex">
-                    <!-- Horizontal Filters: Language, Country, New In Theaters -->
-                    <div class="filter me-3">
-                        <div class="dropdown">
-                            <button class="btn btn-secondary dropdown-toggle" type="button" id="languageDropdownButton" data-bs-toggle="dropdown" aria-expanded="false">
-                                Language
-                            </button>
-                            <ul class="dropdown-menu" aria-labelledby="languageDropdownButton">
-                                <li>
-                                    <a class="dropdown-item" href="#">All Languages</a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" href="#">English</a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" href="#">French</a>
-                                </li>
-                                <!-- Add more language options here -->
-                            </ul>
+                <div class="col-md-6">
+                    <div class="filter-row d-flex mb-3">
+                        <div class="filter me-3">
+                            <div class="dropdown">
+                            <select class="form-control form-control-lg fancy-select btn btn-primary dropdown-toggle" form="searchForm" name="language" id="releaseYear">
+                                    <option value="">All Years</option>
+                                    <option value="2023">2023</option>
+                                    <option value="2022">2022</option>
+                                    <option value="2021">2021</option>
+                                    <option value="2020">2020</option>
+                                    <option value="2005">2005</option>
+                                    <option value="2000">2000</option>
+                                    <option value="1972">1972</option>
+                                </select>
+                            </div>
                         </div>
-                    </div>
-                    <div class="filter me-3">
-                        <div class="dropdown">
-                            <button class="btn btn-secondary dropdown-toggle" type="button" id="countryDropdownButton" data-bs-toggle="dropdown" aria-expanded="false">
-                                Country
-                            </button>
-                            <ul class="dropdown-menu" aria-labelledby="countryDropdownButton">
-                                <li>
-                                    <a class="dropdown-item" href="#">All Countries</a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" href="#">USA</a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" href="#">Canada</a>
-                                </li>
-                                <!-- Add more country options here -->
-                            </ul>
+                        <div class="filter me-3">
+                            <div class="dropdown">
+                                <select class="form-control form-control-lg fancy-select btn btn-primary dropdown-toggle" form="searchForm" name="genre" id="Genre">
+                                    <option value="">All Genres</option>
+                                    <option value="action">Action</option>
+                                    <option value="adventure">Adventure</option>
+                                    <option value="comedy">Comedy</option>
+                                    <option value="drama">Drama</option>
+                                    <option value="fantasy">Fantasy</option>
+                                    <option value="romance">Romance</option>
+                                </select>
+                            </div>
                         </div>
-                    </div>
-                    <div class="filter me-3">
-                        <div class="dropdown">
-                            <button class="btn btn-secondary dropdown-toggle" type="button" id="newInTheatersDropdownButton" data-bs-toggle="dropdown" aria-expanded="false">
-                                New In Theaters
-                            </button>
-                            <ul class="dropdown-menu" aria-labelledby="newInTheatersDropdownButton">
-                                <li>
-                                    <a class="dropdown-item" href="#">All Status</a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" href="#">Now Showing</a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" href="#">Coming Soon</a>
-                                </li>
-                                <!-- Add more status options here -->
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="filter me-3">
-                        <div class="dropdown">
-                            <button class="btn btn-secondary dropdown-toggle" type="button" id="releasedYearDropdownButton" data-bs-toggle="dropdown" aria-expanded="false">
-                                Released Year
-                            </button>
-                            <ul class="dropdown-menu" aria-labelledby="releasedYearDropdownButton">
-                                <li>
-                                    <a class="dropdown-item" href="#">All Years</a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" href="#">2023</a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" href="#">2022</a>
-                                </li>
-                                <!-- Add more release year options here -->
-                            </ul>
+                        <div class="filter me-3">
+                            <div class="dropdown">
+                                <select class="form-control form-control-lg fancy-select btn btn-primary dropdown-toggle" form="searchForm" name="language" id="Language">
+                                    <option value="">All Languages</option>
+                                    <option value="en">English</option>
+                                    <option value="fr">French</option>
+                                    <option value="hi">Hindi</option>
+                                    <option value="it">Italian</option>
+                                    <option value="ja">Japanese</option>
+                                    <option value="ko">Korean</option>
+                                    <option value="uk">Ukranian</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-  
+    }
 
 
     
@@ -208,8 +109,7 @@
                                     <p class="card-text">@movie.Title</p>
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div class="btn-group">
-                                            <button type="button" class="btn btn-sm btn-outline-secondary">Trailer</button>
-                                            <a asp-controller="Movie" asp-action="SingleMovie" asp-route-id="@movie.Id">
+                                            <a asp-controller="MovieDetails" asp-action="SingleMovie" asp-route-MovieID="@movie.MovieID">
                                                 <button type="button" class="btn btn-sm btn-outline-secondary" >Details</button>
                                             </a>
                                         </div>
@@ -226,6 +126,5 @@
                 }
         </div>
     </div>
-
 </body>
 </html>

@@ -31,33 +31,12 @@ namespace CapstoneProject.Controllers
         // GET: /<controller>/
         public async Task<IActionResult> Index()
         {
+            var movies = await _context.Movies.ToListAsync();
+            
             var model = new MoviesViewModel
             {
-                LocalMovies = await _context.Movies.ToListAsync(),
+                LocalMovies = movies,
             };
-            return View(model);
-        }
-
-        [HttpGet("movie/{id}")]
-        public async Task<IActionResult> SingleMovie(int id)
-        {
-            
-            var MovieData = await _context.Movies.FirstOrDefaultAsync(r => r.Id == id);
-            var ReviewList = await _context.Reviews.Where(r => r.MovieId == id).ToListAsync();
-            
-
-            if (MovieData == null)
-            {
-                return NotFound();
-            }
-
-            var model = new MovieViewModel
-            {
-                MovieData = MovieData,
-                ListReviews = ReviewList,
-                UserManager = _userManager
-            };
-
             return View(model);
         }
 
@@ -87,13 +66,28 @@ namespace CapstoneProject.Controllers
         // API endpoint to filter the Movies
         [HttpGet("filter")]
         [Produces("application/json")]
-        public async Task<IActionResult> FilterMovies(string? searchString, string? Genre, DateTime? ReleaseDate)
+        public async Task<IActionResult> FilterMovies(string? searchString=null, string? Genre=null, int? releaseYear=null, string? Language=null)
         {
             var query = _context.Movies.AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(searchString))
             {
                 query = query.Where(m => m.Title.ToLower().Contains(searchString.ToLower()));
+            }
+            
+            if (!string.IsNullOrWhiteSpace(Genre))
+            {
+                query = query.Where(m => m.Writer.ToLower().Contains(Genre.ToLower()));
+            }
+
+            if (!string.IsNullOrWhiteSpace(Language))
+            {
+                query = query.Where(m => m.Language.Contains(Language));
+            }
+
+            if (releaseYear != null)
+            {
+                query = query.Where(m => m.ReleaseDate.Year == releaseYear);
             }
 
             var model = new MoviesViewModel
