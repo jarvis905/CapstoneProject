@@ -93,7 +93,7 @@
     <div>
         <h3>Theaters and Prices</h3>
         <div class="card-container">
-            @foreach (var theaterPrice in Model.Prices)
+            @foreach (var theaterPrice in Model.Prices.OrderBy(tp => tp.TicketPrice))
             {
                 <div class="theater-card">
                     <div class="badge-container">
