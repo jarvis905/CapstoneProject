@@ -192,44 +192,50 @@
                                 <div class="ticket-info-container border p-3 rounded">
                                     @foreach (var groupByMovie in theaterWithPrices.Prices.GroupBy(p => p.Movies.Title))
                                     {
+                                        var firstPrice = groupByMovie.First(); // Take the first price to get common movie details
                                         <div class="row mb-3 border-bottom">
                                             <div class="col-md-12">
-                                                <h4>@groupByMovie.Key</h4>
+                                                <h4>@firstPrice.Movies.Title</h4>
                                             </div>
                                         </div>
 
-                                        @foreach (var price in groupByMovie)
-                                        {
-                                            <div class="row mb-3">
-                                                <!-- Left side: Movie title and poster -->
-                                                <div class="col-md-6">
-                                                    <div class="movie-container">
-                                                        <div class="left-content">
-                                                            <a href="@Url.Action("Index", "MovieDetails", new { movieId = price.Movies.MovieID })">
-                                                                <img src="@price.Movies.PosterImageUrl" alt="@price.Movies.Title" class="movie-poster">
-                                                            </a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <!-- Right side: Price badges -->
-                                                <div class="col-md-6">
-                                                    <div class="col-md-6">
-                                                        <label class="list-group-item rounded-3 py-2" style="background-color: #f0f0f0; padding: 10px;">
-                                                            <div class="price-badge">
-                                                                <p style="text-align: center; color: whitesmoke;">@price.TicketPrice</p>
-                                                            </div>
-                                                            <div class="h-100">
-                                                                <p style="font-weight: bold;">@price.ShowTime.ToString("MM-dd")</p>
-                                                                <button type="button" class="btn btn-primary showtime-button mt-2">@price.ShowTime.ToString("h:mm tt")</button>
-                                                                <span class="d-block small opacity-50">Seats Available: @price.SeatsAvailable</span>
-                                                            </div>
-                                                        </label>
+                                        <!-- Display movie poster only once -->
+                                        <div class="row mb-3">
+                                            <div class="col-md-6">
+                                                <div class="movie-container">
+                                                    <div class="left-content">
+                                                        <a href="@Url.Action("Index", "MovieDetails", new { movieId = firstPrice.Movies.MovieID })">
+                                                            <img src="@firstPrice.Movies.PosterImageUrl" alt="@firstPrice.Movies.Title" class="movie-poster">
+                                                        </a>
                                                     </div>
                                                 </div>
                                             </div>
-                                        }
+                                            <!-- Right side: Price badges arranged horizontally -->
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    @foreach (var price in groupByMovie)
+                                                    {
+                                                        <div class="col-md-4 mb-3">
+                                                            <label class="list-group-item rounded-3 py-2" style="background-color: #f0f0f0; padding: 10px;">
+                                                                <div class="price-badge">
+                                                                    <p style="text-align: center; color: whitesmoke;">$@price.TicketPrice</p>
+                                                                </div>
+                                                                <div class="h-100">
+                                                                    <p style="font-weight: bold;">@price.ShowTime.ToString("MM-dd")</p>
+                                                                    <button type="button" class="btn btn-primary showtime-button mt-2" onclick="buyTicket('@theaterWithPrices.Theater.CinemaLine', '@firstPrice.Movies.Title')">@price.ShowTime.ToString("h:mm tt")</button>
+                                                                    @* <button type="button" class="btn btn-primary showtime-button mt-2">@price.ShowTime.ToString("h:mm tt")</button> *@
+                                                                    <span class="d-block small opacity-50">Seats Available: @price.SeatsAvailable</span>
+                                                                </div>
+                                                            </label>
+                                                        </div>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
                                     }
                                 </div>
+
+
                             </div>
 
                             
@@ -270,7 +276,26 @@
         })(jQuery);
     </script>
 
-   
+    <script>
+        function buyTicket(cinemaLine, movieTitle) {
+            var redirectUrl = '';
+
+            // Replace spaces with dashes in the movie title
+            var formattedMovieTitle = movieTitle.toLowerCase().replace(/\s+/g, '-').replace('&', 'and').replace(':', '');
+
+            if (cinemaLine === 'Cineplex') {
+                // Dynamically construct the redirect URL for Cineplex
+                redirectUrl = `https://www.cineplex.com/movie/${formattedMovieTitle}`;
+            } else if (cinemaLine === 'Landmark') {
+                // Dynamically construct the redirect URL for Landmark
+                redirectUrl = `https://www.landmarkcinemas.com/film-info/${formattedMovieTitle}`;
+            }
+
+            // Open the redirect URL in a new tab/window
+            window.open(redirectUrl, '_blank');
+        }
+    </script>
+
 
 </body>
 </html>
