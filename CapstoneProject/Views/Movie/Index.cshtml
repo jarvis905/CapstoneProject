@@ -40,14 +40,15 @@
                     <div class="filter-row d-flex mb-3">
                         <div class="filter me-3">
                             <div class="dropdown">
-                            <select class="form-control form-control-lg fancy-select btn btn-primary dropdown-toggle" form="searchForm" name="language" id="releaseYear">
+                            <select class="form-control form-control-lg fancy-select btn btn-primary dropdown-toggle" form="searchForm" name="releaseYear" id="releaseYear">
                                     <option value="">All Years</option>
                                     <option value="2023">2023</option>
                                     <option value="2022">2022</option>
-                                    <option value="2021">2021</option>
                                     <option value="2020">2020</option>
+                                    <option value="2017">2017</option>
                                     <option value="2005">2005</option>
                                     <option value="2000">2000</option>
+                                    <option value="1993">1993</option>
                                     <option value="1972">1972</option>
                                 </select>
                             </div>
@@ -109,7 +110,7 @@
                                     <p class="card-text">@movie.Title</p>
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div class="btn-group">
-                                            <a asp-controller="MovieDetails" asp-action="SingleMovie" asp-route-MovieID="@movie.MovieID">
+                                            <a asp-controller="MovieDetails" asp-action="Index" asp-route-MovieID="@movie.MovieID">
                                                 <button type="button" class="btn btn-sm btn-outline-secondary" >Details</button>
                                             </a>
                                         </div>

@@ -142,34 +142,49 @@
                 <ul class="list-group">
                     
                     <!-- Reviews in database -->
-                    @foreach (var review in Model.MovieReviews.OrderByDescending(r => r.Timestamp))
+                    @if (Model.MovieReviews != null && Model.MovieReviews.Any())
                     {
-                        var userDetails = await Model.UserManager.FindByIdAsync(review.UserId);
-                        <li class="list-group-item">
-                            <div class="row">
-                                <div class="col-sm-2 user-details">
-                                    <p>@userDetails.UserName</p>
-                                    <!-- Keeping space for a profile photo of user. To be added later. -->
-                                    <img src="cinqueterre.jpg" class="rounded-circle" width="90px">
-                                </div>
-                                <div class="col-sm-10">
-                                    <p>Review: @review.Comment</p>
-                                    <div class="row">
-                                        <div class="col-sm-6">
-                                            <span>Rating: @review.UserRate</span>
-                                            @for (int i = 0; i < @review.UserRate; i++)
-                                            {<i class="fa fa-star rating-color"></i>}
-                                            @for (int i = 0; i < 5 - @review.UserRate; i++)
-                                            {<i class="fa fa-star"></i>}
+                        @foreach (var review in Model.MovieReviews.OrderByDescending(r => r.Timestamp))
+                        {
+                            var userDetails = await Model.UserManager.FindByIdAsync(review.UserId);
+                            <li class="list-group-item">
+                                <div class="row">
+                                    <div class="col-sm-4 user-details">
+                                        <p>@userDetails.UserName</p>
+                                        <!-- Keeping space for a profile photo of user. To be added later. -->
+                                        <img src="/image/cinqueterre.jpg" class="rounded-circle" width="90px">
+                                    </div>
+                                    <div class="col-sm-8">
+                                        <p>Review: @review.Comment</p>
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <span>Rating: @review.UserRate</span>
+                                                @for (int i = 0; i < @review.UserRate; i++)
+                                                {<i class="fa fa-star rating-color"></i>}
+                                                @for (int i = 0; i < 5 - @review.UserRate; i++)
+                                                {<i class="fa fa-star"></i>}
 
-                                        </div>
-                                        <div class="col-sm-6" style="text-align: right;">
-                                            <p>@review.Timestamp</p>
+                                            </div>
+                                            <div class="col-sm-6" style="text-align: right;">
+                                                <p>@review.Timestamp
+                                                <script>
+                                                    var reviewDate = new Date("@review.Timestamp.ToString("yyyy-MM-ddTHH:mm:ss")");
+                                                    var currentDate = new Date();
+                                                    var timeDifference = currentDate - reviewDate;
+                                                    var daysAgo = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+                                                    document.write("  (" + daysAgo + " days ago)");
+                                                </script>
+                                                </p>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </li>
+                            </li>
+                        }
+                    }
+                    else
+                    {
+                       <li class="list-group-item">Be the first one to review!</li> 
                     }
                 </ul>
             </div>
